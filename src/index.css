@@ -34,17 +34,25 @@ code {
   align-items: center;
   margin-top: 50px;
   margin-bottom: 50px;
+  justify-content: space-around;
+}
+
+.product-category-buttons {
+  margin-top: 30px;
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .product-showcase {
   display: flex;
-  width: 80%;
+  width: 95%;
   flex-wrap: wrap;
   margin-top: 50px;
 }
 
 .individual-product-container {
-  width: 19%;
+  width: 15%;
   margin-left: 1%;
   margin-bottom: 1%;
   display: flex;

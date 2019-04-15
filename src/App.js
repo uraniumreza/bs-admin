@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Navbar from './Navbar';
 import { BrowserRouter, Route } from 'react-router-dom';
-import HomeContainer from './Home/HomeContainer';
+// import HomeContainer from './Home/HomeContainer';
 import OrderContainer from './Order/OrderContainer';
 import UserListContainer from './User/UserListContainer';
 import ProductContainer from './Product/ProductContainer';
@@ -14,7 +14,7 @@ class App extends Component {
       <BrowserRouter>
         <div>
           <Navbar />
-          <Route path="/" component={HomeContainer} exact />
+          <Route path="/" component={OrderContainer} exact />
           <Route path="/products" component={ProductContainer} />
           <Route path="/orders" component={OrderContainer} />
           <Route path="/users" component={UserListContainer} />

@@ -80,3 +80,44 @@ code {
   font-weight: 500;
   margin-left: 20px;
 }
+
+.order-description {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.order-item-id {
+  width: 10%;
+  margin: 2%;
+}
+
+.order-item-name {
+  width: 30%;
+  margin: 2%;
+}
+
+.order-item-quantity {
+  width: 20%;
+  margin: 2%;
+}
+
+.order-item-price {
+  width: 15%;
+  margin: 2%;
+}
+
+.order-item-cancel {
+  width: 20%;
+  margin: 2%;
+}
+
+.order-description-header {
+  display: flex;
+  width: 800px;
+}
+
+.sr-selection {
+  width: 700px;
+  height: 50px;
+}

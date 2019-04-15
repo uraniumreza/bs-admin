@@ -11,7 +11,6 @@ class ProductListContainer extends Component {
     this.setState({
       category: category
     });
-    console.log('category change', category);
   };
 
   render() {

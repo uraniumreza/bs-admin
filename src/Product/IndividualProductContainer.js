@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 
 const customStyles = {
   content: {
@@ -14,16 +12,26 @@ const customStyles = {
   }
 };
 
-class AddProductContainer extends Component {
+const dataObject = {
+  name: 'Hestia Goods Switch Carrying Case',
+  price: '1669',
+  brand: 'XXY',
+  category: 'XXXU',
+  stock: '5',
+  imageURL: 'https://images-na.ssl-images-amazon.com/images/I/61H7IVw48tL._UL900_.jpg'
+};
+
+class IndividualProductContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalIsOpen: false,
-      name: '',
-      price: '',
-      brand: '',
-      category: '',
-      stock: ''
+      name: dataObject.name,
+      price: dataObject.price,
+      brand: dataObject.brand,
+      category: dataObject.category,
+      stock: dataObject.stock,
+      imageURL: dataObject.imageURL
     };
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -46,7 +54,7 @@ class AddProductContainer extends Component {
     });
   }
 
-  handleAddNewProductClick = id => {
+  handleProductClick = id => {
     this.openModal();
   };
 
@@ -75,21 +83,30 @@ class AddProductContainer extends Component {
     );
   };
 
-  handleSubmit = event => {
-    // this.closeModal(event);
-    this.addNotification();
-  };
-
   render() {
-    const { name, price, brand, category, stock } = this.state;
+    const { id } = this.props;
+    const { name, price, brand, category, stock, imageURL } = this.state;
     return (
-      <div className="add-product-container">
-        <ReactNotification ref={this.notificationDOMRef} />
-        Add a product by clicking the button
-        <button className="btn btn-primary" onClick={this.handleAddNewProductClick}>
-          Add a product
-        </button>
-        Or click on the product to edit the information
+      <div className="individual-product-container" onClick={() => this.handleProductClick(id)}>
+        <img className="individual-product-image" src={imageURL} alt="product" />
+        <div className="product-name">
+          <strong>Price: </strong>
+          {price}
+        </div>
+        <div className="product-name">
+          <strong>Name:</strong>
+          {name}
+        </div>
+        <div className="product-name">
+          <strong>Brand:</strong> {brand}
+        </div>
+        <div className="product-name">
+          <strong>category:</strong> {category}
+        </div>
+        <div className="product-name">
+          <strong>Stock:</strong> {stock}
+        </div>
+
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
@@ -152,7 +169,7 @@ class AddProductContainer extends Component {
             <input className="form-input" type="file" id="input-example-1" name="image" placeholder="Image" />
 
             <button style={{ marginTop: '20px' }} className="btn btn-primary">
-              Add item
+              Edit item
             </button>
           </div>
         </Modal>
@@ -161,4 +178,4 @@ class AddProductContainer extends Component {
   }
 }
 
-export default AddProductContainer;
+export default IndividualProductContainer;

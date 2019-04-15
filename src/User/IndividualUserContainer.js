@@ -14,16 +14,26 @@ const customStyles = {
   }
 };
 
-class AddProductContainer extends Component {
+const dataObject = {
+  phone: '8801536239164',
+  shopName: 'BS Trading',
+  ownerName: 'XXX',
+  address: 'XXXU, XXX, XXX, XX',
+  role: 'sales',
+  password: 'xxxx'
+};
+
+class IndividualUserContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalIsOpen: false,
-      name: '',
-      price: '',
-      brand: '',
-      category: '',
-      stock: ''
+      phone: dataObject.phone,
+      shopName: dataObject.shopName,
+      ownerName: dataObject.ownerName,
+      address: dataObject.address,
+      role: dataObject.role,
+      password: dataObject.password
     };
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -46,7 +56,7 @@ class AddProductContainer extends Component {
     });
   }
 
-  handleAddNewProductClick = id => {
+  handleProductClick = id => {
     this.openModal();
   };
 
@@ -81,15 +91,37 @@ class AddProductContainer extends Component {
   };
 
   render() {
-    const { name, price, brand, category, stock } = this.state;
+    const { id } = this.props;
+    const { phone, shopName, ownerName, address, role, password } = this.state;
+
     return (
-      <div className="add-product-container">
+      <div className="individual-product-container" onClick={() => this.handleProductClick(id)}>
         <ReactNotification ref={this.notificationDOMRef} />
-        Add a product by clicking the button
-        <button className="btn btn-primary" onClick={this.handleAddNewProductClick}>
-          Add a product
-        </button>
-        Or click on the product to edit the information
+        <div className="product-name" style={{ marginTop: '20px' }}>
+          <strong>User # </strong>
+          {id}
+        </div>
+        <div className="product-name">
+          <strong>Phone: </strong>
+          {phone}
+        </div>
+        <div className="product-name">
+          <strong>Shop Name:</strong>
+          {shopName}
+        </div>
+        <div className="product-name">
+          <strong>Owner Name:</strong> {ownerName}
+        </div>
+        <div className="product-name">
+          <strong>Address:</strong> {address}
+        </div>
+        <div className="product-name">
+          <strong>Role:</strong> {role}
+        </div>
+        <div className="product-name">
+          <strong>Password:</strong> {password}
+        </div>
+
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
@@ -98,61 +130,61 @@ class AddProductContainer extends Component {
           contentLabel="Example Modal"
         >
           <div className="form-group" style={{ width: '500px' }}>
-            <label className="form-label">Name</label>
+            <label className="form-label">Shop Name</label>
             <input
               className="form-input"
               type="text"
               id="input-example-1"
-              name="name"
-              placeholder="Name"
+              name="shopName"
+              placeholder="Shop Name"
               onChange={this.handleOnChange}
-              value={name}
+              value={shopName}
             />
-            <label className="form-label">Price</label>
+            <label className="form-label">Owner Name</label>
             <input
               className="form-input"
               type="text"
               id="input-example-1"
-              name="price"
-              placeholder="Price"
-              value={price}
+              name="ownerName"
+              placeholder="Owner Name"
+              value={ownerName}
               onChange={this.handleOnChange}
             />
-            <label className="form-label">Brand</label>
+            <label className="form-label">Address</label>
             <input
               className="form-input"
               type="text"
               id="input-example-1"
-              name="brand"
-              placeholder="Brand"
-              value={brand}
+              name="address"
+              placeholder="Adress"
+              value={address}
               onChange={this.handleOnChange}
             />
-            <label className="form-label">Category</label>
-            <input
-              className="form-input"
-              type="text"
-              id="input-example-1"
-              name="category"
-              placeholder="Category"
-              value={category}
-              onChange={this.handleOnChange}
-            />
-            <label className="form-label">Stock</label>
-            <input
-              className="form-input"
-              type="text"
-              id="input-example-1"
-              name="stock"
-              placeholder="Category"
-              value={stock}
-              onChange={this.handleOnChange}
-            />
-            <label className="form-label">Image</label>
-            <input className="form-input" type="file" id="input-example-1" name="image" placeholder="Image" />
+            <label className="form-label">Role</label>
+            <div className="form-group">
+              <select name="role" value={role} className="form-select" onChange={this.handleOnChange}>
+                <option value="admin">Admin</option>
+                <option value="sales">Sales Representative</option>
+                <option value="shopper">Shopper</option>
+              </select>
+            </div>
+            <label className="form-label">Password</label>
 
-            <button style={{ marginTop: '20px' }} className="btn btn-primary">
-              Add item
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={this.handleOnChange}
+            />
+            <button
+              style={{ marginTop: '20px' }}
+              className="btn btn-primary"
+              onClick={event => this.handleSubmit(event)}
+            >
+              Edit user
             </button>
           </div>
         </Modal>
@@ -161,4 +193,4 @@ class AddProductContainer extends Component {
   }
 }
 
-export default AddProductContainer;
+export default IndividualUserContainer;

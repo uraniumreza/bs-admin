@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import './App.css';
-import Navbar from './Navbar';
 import { BrowserRouter, Route } from 'react-router-dom';
-// import HomeContainer from './Home/HomeContainer';
+import LoginPage from './LandingPage/LoginPage';
+import ProtectedRoute from './ProtectedRoute';
 import OrderContainer from './Order/OrderContainer';
-import UserListContainer from './User/UserListContainer';
 import ProductContainer from './Product/ProductContainer';
-// import LoginPage from './LoginPage';
+import UserListContainer from './User/UserListContainer';
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter>
         <div>
-          <Navbar />
-          <Route path="/" component={OrderContainer} exact />
-          <Route path="/products" component={ProductContainer} />
-          <Route path="/orders" component={OrderContainer} />
-          <Route path="/users" component={UserListContainer} />
+          <Route path="/" component={LoginPage} exact />
+          <ProtectedRoute path="/orders" component={OrderContainer} />
+          <ProtectedRoute path="/users" component={UserListContainer} />
+          <ProtectedRoute path="/products" component={ProductContainer} />
         </div>
       </BrowserRouter>
     );

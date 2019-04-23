@@ -65,19 +65,21 @@ class AddProductContainer extends Component {
   }
 
   handleOnChange = event => {
-    this.setState(
-      {
-        [event.target.name]: event.target.value
-      },
-      () => {
-        console.log(this.state);
-      }
-    );
+    this.setState({
+      [event.target.name]: event.target.value
+    });
   };
 
   handleSubmit = event => {
     // this.closeModal(event);
     this.addNotification();
+  };
+
+  handleImageUpload = event => {
+    const files = Array.from(event.target.files);
+    this.setState({
+      file: files[0]
+    });
   };
 
   render() {
@@ -149,9 +151,16 @@ class AddProductContainer extends Component {
               onChange={this.handleOnChange}
             />
             <label className="form-label">Image</label>
-            <input className="form-input" type="file" id="input-example-1" name="image" placeholder="Image" />
+            <input
+              className="form-input"
+              type="file"
+              id="input-example-1"
+              name="image"
+              placeholder="Image"
+              onChange={this.handleImageUpload}
+            />
 
-            <button style={{ marginTop: '20px' }} className="btn btn-primary">
+            <button style={{ marginTop: '20px' }} className="btn btn-primary" onClick={this.handleSubmit}>
               Add item
             </button>
           </div>

@@ -7,7 +7,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      auth.isAuthenticated() === true ? (
+      auth.loggedIn() === true ? (
         <div>
           <Navbar />
           <Component {...props} />

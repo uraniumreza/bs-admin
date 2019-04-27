@@ -1,3 +1,8 @@
+/* TODO
+
+- If logged in, redirect to order status
+*/
+
 import React, { Component } from 'react';
 import auth from '../Common/auth';
 import Loading from '../Common/Loading';
@@ -33,7 +38,6 @@ class LoginPage extends Component {
       isLoading: false
     });
     if (loggedIn) {
-      // this.addLoggedInNotification();
       this.props.history.push('/orders');
     } else {
       this.addLoggedInFailedNotification();

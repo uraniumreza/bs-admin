@@ -52,7 +52,16 @@ code {
 }
 
 .individual-product-container {
-  width: 15%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: 1px solid #edeff1;
+  cursor: pointer;
+  padding-bottom: 20px;
+}
+
+.individual-product-wrapper {
+  width: 18%;
   margin-left: 1%;
   margin-bottom: 1%;
   display: flex;
@@ -128,4 +137,9 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.button-section {
+  display: flex;
+  flex-direction: column;
 }

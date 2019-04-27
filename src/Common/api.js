@@ -1,19 +1,21 @@
 import axios from 'axios';
 
-// const select = state => state.tokens.accessToken;
-
-// const listener = () => {
-//   // const jwt = select(store.getState());
-//   axios.defaults.withCredentials = true;
-//   axios.defaults.headers.common.Authorization = `Bearer ${jwt}`;
-// };
-
 const fetcher = axios.create({
-  baseURL: 'http://localhost:3000/api/v1', //'https://bstrading-api.herokuapp.com/api/v1',
+  baseURL: 'https://bstrading-api.herokuapp.com/api/v1',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': undefined
   }
 });
+
+fetcher.interceptors.request.use(
+  function(config) {
+    config.headers.common.Authorization = `Bearer ${localStorage.getItem('id_token')}`;
+    return config;
+  },
+  function(error) {
+    return Promise.reject(error);
+  }
+);
 
 const api = {
   post: (url, data) =>

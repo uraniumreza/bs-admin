@@ -32,7 +32,6 @@ class Auth {
       const expiresIn = localStorage.getItem('expiresIn');
       const expiresInTimeStamp = new Date(expiresIn);
       const nowTimeStamp = Date.now();
-      console.log(expiresIn, expiresInTimeStamp, nowTimeStamp);
       if (nowTimeStamp > expiresInTimeStamp) {
         return true;
       } else return false;

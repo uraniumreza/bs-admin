@@ -146,7 +146,7 @@ class IndividualOrderContainer extends Component {
     const { phone, shopName, ownerName, orderId, products } = this.state;
 
     return (
-      <div className="individual-product-container" onClick={() => this.handleProductClick(id)}>
+      <div className="individual-product-wrapper" onClick={() => this.handleProductClick(id)}>
         <ReactNotification ref={this.notificationDOMRef} />
         <div className="product-name" style={{ marginTop: '20px' }}>
           <strong>Order # </strong>

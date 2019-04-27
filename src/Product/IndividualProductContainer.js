@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
+import api from '../Common/api';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 
 const customStyles = {
   content: {
@@ -12,32 +15,28 @@ const customStyles = {
   }
 };
 
-const dataObject = {
-  name: 'Hestia Goods Switch Carrying Case',
-  price: '1669',
-  brand: 'XXY',
-  category: 'XXXU',
-  stock: '5',
-  imageURL: 'https://images-na.ssl-images-amazon.com/images/I/61H7IVw48tL._UL900_.jpg'
-};
-
 class IndividualProductContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalIsOpen: false,
-      name: dataObject.name,
-      price: dataObject.price,
-      brand: dataObject.brand,
-      category: dataObject.category,
-      stock: dataObject.stock,
-      imageURL: dataObject.imageURL
+      modalIsOpen: false
     };
     this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.addNotification = this.addNotification.bind(this);
     this.notificationDOMRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const { id, name, image, price, discount, stock_count } = this.props.item;
+    this.setState({
+      id,
+      name,
+      image,
+      price,
+      discount,
+      stock: stock_count
+    });
   }
 
   addNotification() {
@@ -54,7 +53,73 @@ class IndividualProductContainer extends Component {
     });
   }
 
-  handleProductClick = id => {
+  handleImageUpload = event => {
+    const files = Array.from(event.target.files);
+    this.setState({
+      file: files[0]
+    });
+  };
+
+  addSuccessNotification(notification) {
+    this.notificationDOMRef.current.addNotification({
+      title: 'Success',
+      message: notification,
+      type: 'success',
+      insert: 'top',
+      container: 'top-right',
+      animationIn: ['animated', 'fadeIn'],
+      animationOut: ['animated', 'fadeOut'],
+      dismiss: { duration: 2000 },
+      dismissable: { click: true }
+    });
+  }
+
+  addFailureNotification() {
+    this.notificationDOMRef.current.addNotification({
+      title: 'Failure',
+      message: 'API call failed!',
+      type: 'danger',
+      insert: 'top',
+      container: 'top-right',
+      animationIn: ['animated', 'fadeIn'],
+      animationOut: ['animated', 'fadeOut'],
+      dismiss: { duration: 2000 },
+      dismissable: { click: true }
+    });
+  }
+
+  onCloudUploadImage = async () => {
+    const { file } = this.state;
+    let fd = new FormData();
+    fd.append('image', file);
+    this.setState({
+      imageUploading: true
+    });
+    try {
+      const response = await api.post('/media/upload', fd);
+      if (response && response.url) {
+        this.setState({
+          image: response.url,
+          imageUploading: false
+        });
+        this.addSuccessNotification('Image uploaded');
+      } else {
+        this.addFailureNotification('Upload Failed');
+      }
+      this.setState({
+        imageUploading: false
+      });
+    } catch (err) {
+      this.addFailureNotification('Upload Failed');
+      this.setState({
+        imageUploading: false
+      });
+      this.addFailureNotification('Upload Failed');
+    }
+  };
+
+  handleProductClick = async () => {
+    await this.loadData();
     this.openModal();
   };
 
@@ -62,10 +127,28 @@ class IndividualProductContainer extends Component {
     this.setState({ modalIsOpen: true });
   }
 
-  afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // this.subtitle.style.color = '#f00';
-  }
+  loadData = async () => {
+    this.setState({
+      isLoading: true
+    });
+    const { id } = this.state;
+    try {
+      const response = await api.get(`/products/${id}`);
+      console.log(response);
+      if (response && response._id) {
+        const { brand, category, description, active } = response;
+        this.setState({
+          brand,
+          category,
+          description,
+          isLoading: false,
+          active
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   closeModal(e) {
     e.stopPropagation();
@@ -75,7 +158,8 @@ class IndividualProductContainer extends Component {
   handleOnChange = event => {
     this.setState(
       {
-        [event.target.name]: event.target.value
+        [event.target.name]:
+          event.target.value === 'true' ? true : event.target.value === 'false' ? false : event.target.value
       },
       () => {
         console.log(this.state);
@@ -83,28 +167,68 @@ class IndividualProductContainer extends Component {
     );
   };
 
+  handleProductEdit = async event => {
+    const { id, name, price, discount, stock, brand, active, category, description, image } = this.state;
+    this.setState({
+      isLoading: true
+    });
+    try {
+      await api.patch(`products/${id}`, {
+        name,
+        price,
+        discount,
+        stock_count: stock,
+        brand,
+        active,
+        category,
+        description,
+        image
+      });
+      this.setState({
+        isLoading: false
+      });
+      this.addSuccessNotification('Product Updated!');
+    } catch (error) {
+      console.log(error);
+      this.addFailureNotification('Not successfull!');
+    }
+  };
+
   render() {
     const { id } = this.props;
-    const { name, price, brand, category, stock, imageURL } = this.state;
+    const {
+      name,
+      price,
+      discount,
+      stock,
+      image,
+      brand,
+      active,
+      category,
+      description,
+      isLoading,
+      imageUploading
+    } = this.state;
     return (
-      <div className="individual-product-container" onClick={() => this.handleProductClick(id)}>
-        <img className="individual-product-image" src={imageURL} alt="product" />
-        <div className="product-name">
-          <strong>Price: </strong>
-          {price}
-        </div>
-        <div className="product-name">
-          <strong>Name:</strong>
-          {name}
-        </div>
-        <div className="product-name">
-          <strong>Brand:</strong> {brand}
-        </div>
-        <div className="product-name">
-          <strong>category:</strong> {category}
-        </div>
-        <div className="product-name">
-          <strong>Stock:</strong> {stock}
+      <div className="individual-product-wrapper">
+        <ReactNotification ref={this.notificationDOMRef} />
+        <div onClick={() => this.handleProductClick(id)}>
+          <img className="individual-product-image" src={image} alt="product" />
+          <div className="product-name">
+            <strong>Price: </strong>
+            {price}
+          </div>
+          <div className="product-name">
+            <strong>Name:</strong>
+            {name}
+          </div>
+          <div className="product-name">
+            <strong>Stock:</strong>
+            {stock}
+          </div>
+          <div className="product-name">
+            <strong>Discount:</strong> {discount}
+          </div>
         </div>
 
         <Modal
@@ -145,32 +269,60 @@ class IndividualProductContainer extends Component {
               value={brand}
               onChange={this.handleOnChange}
             />
-            <label className="form-label">Category</label>
+            <label className="form-label">Description</label>
             <input
               className="form-input"
               type="text"
               id="input-example-1"
-              name="category"
-              placeholder="Category"
-              value={category}
+              name="description"
+              placeholder="Description"
+              value={description}
               onChange={this.handleOnChange}
             />
+            <label className="form-label">Category</label>
+            <div className="form-group">
+              <select name="category" value={category} className="form-select" onChange={this.handleOnChange}>
+                <option value="Cosmetics">Cosmetics</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Accessories">Accessories</option>
+              </select>
+            </div>
+            <label className="form-label">Active</label>
+            <div className="form-group">
+              <select name="active" value={active} className="form-select" onChange={this.handleOnChange}>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
             <label className="form-label">Stock</label>
             <input
               className="form-input"
               type="text"
               id="input-example-1"
               name="stock"
-              placeholder="Category"
+              placeholder="Stock"
               value={stock}
               onChange={this.handleOnChange}
             />
-            <label className="form-label">Image</label>
-            <input className="form-input" type="file" id="input-example-1" name="image" placeholder="Image" />
 
-            <button style={{ marginTop: '20px' }} className="btn btn-primary">
-              Edit item
-            </button>
+            <label className="form-label">Image</label>
+            <input
+              className="form-input"
+              type="file"
+              id="input-example-1"
+              name="image"
+              placeholder="Image"
+              onChange={this.handleImageUpload}
+            />
+
+            <div className="button-section">
+              <button style={{ marginTop: '20px' }} className="btn btn-primary" onClick={this.onCloudUploadImage}>
+                {imageUploading ? 'Uploading Image' : 'Upload Image'}
+              </button>
+              <button style={{ marginTop: '20px' }} className="btn btn-primary" onClick={this.handleProductEdit}>
+                {isLoading ? 'Updating' : 'Update Product Info'}
+              </button>
+            </div>
           </div>
         </Modal>
       </div>

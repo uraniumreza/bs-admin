@@ -7,8 +7,18 @@ class Auth {
         password
       })
       .then(res => {
-        this.setToken(res.token.accessToken, res.token.expiresIn);
-        return Promise.resolve(res);
+        if ((res.data && res.data.error) || (res.role && res.role !== 'admin')) {
+          return Promise.resolve({
+            loggedIn: false
+          });
+        } else {
+          if (res.token && res.token.accessToken && res.token.expiresIn) {
+            this.setToken(res.token.accessToken, res.token.expiresIn);
+            return Promise.resolve({
+              loggedIn: true
+            });
+          }
+        }
       });
   };
 
@@ -22,7 +32,6 @@ class Auth {
       const expiresIn = localStorage.getItem('expiresIn');
       const expiresInTimeStamp = new Date(expiresIn);
       const nowTimeStamp = Date.now();
-      console.log(expiresIn, expiresInTimeStamp, nowTimeStamp);
       if (nowTimeStamp > expiresInTimeStamp) {
         return true;
       } else return false;

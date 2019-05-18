@@ -11,7 +11,8 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    maxHeight: '80vh'
   }
 };
 
@@ -136,10 +137,10 @@ class IndividualNotificationContainer extends Component {
             </div>
             <button
               style={{ marginTop: '20px' }}
-              className="btn btn-primary"
+              className={isLoading ? 'btn disabled' : 'btn btn-primary'}
               onClick={event => this.handleSubmit(event)}
             >
-              {isLoading ? 'Editing notification' : 'Edit notification'}
+              Edit notification
             </button>
           </div>
         </Modal>

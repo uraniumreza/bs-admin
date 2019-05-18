@@ -3,7 +3,6 @@ import Modal from 'react-modal';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import api from '../Common/api';
-import Loading from '../Common/Loading';
 
 const customStyles = {
   content: {
@@ -12,7 +11,8 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    maxHeight: '80vh'
   }
 };
 
@@ -23,6 +23,7 @@ class AddProductContainer extends Component {
       modalIsOpen: false,
       name: '',
       price: '',
+      discount: '',
       brand: '',
       category: 'Cosmetics',
       color: '',
@@ -174,7 +175,8 @@ class AddProductContainer extends Component {
       imageLink,
       productSaving,
       color,
-      description
+      description,
+      discount
     } = this.state;
     return (
       <div className="add-product-container">
@@ -191,108 +193,122 @@ class AddProductContainer extends Component {
           style={customStyles}
           contentLabel="Product Label"
         >
-          {imageUploading || productSaving ? (
-            <Loading />
-          ) : (
-            <div className="form-group" style={{ width: '500px' }}>
-              <label className="form-label">Name</label>
-              <input
-                className="form-input"
-                type="text"
-                id="input-example-1"
-                name="name"
-                placeholder="Name"
-                onChange={this.handleOnChange}
-                value={name}
-              />
-              <label className="form-label">Price</label>
-              <input
-                className="form-input"
-                type="text"
-                id="input-example-1"
-                name="price"
-                placeholder="Price"
-                value={price}
-                onChange={this.handleOnChange}
-              />
-              <label className="form-label">Brand</label>
-              <input
-                className="form-input"
-                type="text"
-                id="input-example-1"
-                name="brand"
-                placeholder="Brand"
-                value={brand}
-                onChange={this.handleOnChange}
-              />
-              <label className="form-label">Color</label>
-              <input
-                className="form-input"
-                type="text"
-                id="input-example-1"
-                name="color"
-                placeholder="Color"
-                value={color}
-                onChange={this.handleOnChange}
-              />
-              <label className="form-label">Description</label>
-              <input
-                className="form-input"
-                type="text"
-                id="input-example-1"
-                name="description"
-                placeholder="description"
-                value={description}
-                onChange={this.handleOnChange}
-              />
-              <label className="form-label">Category</label>
-              <div className="form-group">
-                <select name="category" value={category} className="form-select" onChange={this.handleOnChange}>
-                  <option value="Cosmetics">Cosmetics</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Accessories">Accessories</option>
-                </select>
-              </div>
-              <label className="form-label">Stock</label>
-              <input
-                className="form-input"
-                type="text"
-                id="input-example-1"
-                name="stock"
-                placeholder="Stock"
-                value={stock}
-                onChange={this.handleOnChange}
-              />
-              {imageLink && imageLink.length > 0 ? null : (
-                <div>
-                  <label className="form-label">Image</label>
-                  <input
-                    className="form-input"
-                    type="file"
-                    id="input-example-1"
-                    name="image"
-                    placeholder="Image"
-                    onChange={this.handleImageUpload}
-                  />
-                </div>
-              )}
-              <div className="button-section">
-                {imageLink && imageLink.length > 0 ? (
-                  <div style={{ marginTop: '10px' }}>
-                    <strong>Image Uploaded.</strong>
-                  </div>
-                ) : (
-                  <button style={{ marginTop: '20px' }} className="btn btn-primary" onClick={this.onCloudUploadImage}>
-                    Upload Image
-                  </button>
-                )}
-
-                <button style={{ marginTop: '20px' }} className="btn btn-primary" onClick={this.handleSubmit}>
-                  Add item
-                </button>
-              </div>
+          <div className="form-group" style={{ width: '500px' }}>
+            <label className="form-label">Name</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="name"
+              placeholder="Name"
+              onChange={this.handleOnChange}
+              value={name}
+            />
+            <label className="form-label">Price</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="price"
+              placeholder="Price"
+              value={price}
+              onChange={this.handleOnChange}
+            />
+            <label className="form-label">Discount</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="discount"
+              placeholder="Discount"
+              value={discount}
+              onChange={this.handleOnChange}
+            />
+            <label className="form-label">Brand</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="brand"
+              placeholder="Brand"
+              value={brand}
+              onChange={this.handleOnChange}
+            />
+            <label className="form-label">Color</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="color"
+              placeholder="Color"
+              value={color}
+              onChange={this.handleOnChange}
+            />
+            <label className="form-label">Description</label>
+            <textarea
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="description"
+              placeholder="description"
+              value={description}
+              onChange={this.handleOnChange}
+            />
+            <label className="form-label">Category</label>
+            <div className="form-group">
+              <select name="category" value={category} className="form-select" onChange={this.handleOnChange}>
+                <option value="Cosmetics">Cosmetics</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Accessories">Accessories</option>
+              </select>
             </div>
-          )}
+            <label className="form-label">Stock</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="stock"
+              placeholder="Stock"
+              value={stock}
+              onChange={this.handleOnChange}
+            />
+            {imageLink && imageLink.length > 0 ? null : (
+              <div>
+                <label className="form-label">Image</label>
+                <input
+                  className="form-input"
+                  type="file"
+                  id="input-example-1"
+                  name="image"
+                  placeholder="Image"
+                  onChange={this.handleImageUpload}
+                />
+              </div>
+            )}
+            <div className="button-section">
+              {imageLink && imageLink.length > 0 ? (
+                <div style={{ marginTop: '10px' }}>
+                  <strong>Image Uploaded.</strong>
+                </div>
+              ) : (
+                <button
+                  style={{ marginTop: '20px' }}
+                  className={imageUploading ? 'btn disabled' : 'btn btn-primary'}
+                  onClick={this.onCloudUploadImage}
+                >
+                  Upload Image
+                </button>
+              )}
+
+              <button
+                style={{ marginTop: '20px' }}
+                className={productSaving ? 'btn disabled' : 'btn btn-primary'}
+                onClick={this.handleSubmit}
+              >
+                Add item
+              </button>
+            </div>
+          </div>
         </Modal>
       </div>
     );

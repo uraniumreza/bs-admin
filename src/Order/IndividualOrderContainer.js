@@ -16,7 +16,8 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    maxHeight: '80vh'
   }
 };
 class IndividualOrderContainer extends Component {
@@ -270,21 +271,23 @@ class IndividualOrderContainer extends Component {
             {orderStatus === 'Pending' ? (
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div style={{ width: '10%' }}>
-                  <button disabled={isLoading} className="btn btn-error" onClick={event => this.onCancelOrder(event)}>
+                  <button
+                    disabled={isLoading}
+                    className={isLoading ? 'btn disabled' : 'btn btn-error'}
+                    onClick={event => this.onCancelOrder(event)}
+                  >
                     Cancel Order
                   </button>
                 </div>
                 <div style={{ width: '40%', display: 'flex', justifyContent: 'space-around' }}>
                   <button
-                    disabled={isLoading}
-                    className="btn btn-success"
+                    className={isLoading ? 'btn disabled' : 'btn btn-success'}
                     onClick={event => this.onRequestQuantityChange(event)}
                   >
                     Update quantity
                   </button>
                   <button
-                    className="btn btn-success"
-                    disabled={isLoading}
+                    className={isLoading ? 'btn disabled' : 'btn btn-success'}
                     style={{ textAlign: 'center', marginLeft: '10px' }}
                     onClick={event => this.handleSubmit(event)}
                   >

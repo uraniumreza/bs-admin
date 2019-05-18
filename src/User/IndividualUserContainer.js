@@ -11,7 +11,8 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    maxHeight: '80vh'
   }
 };
 
@@ -26,7 +27,8 @@ class IndividualUserContainer extends Component {
       ownerName: user.ownerName,
       address: user.address,
       id: user.id,
-      isLoading: false
+      isLoading: false,
+      role: user.role
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -157,13 +159,13 @@ class IndividualUserContainer extends Component {
               value={address}
               onChange={this.handleOnChange}
             />
-            <label className="form-label">Role</label>
+            {/* <label className="form-label">Role</label>
             <div className="form-group">
               <select name="role" value={role} className="form-select" onChange={this.handleOnChange}>
                 <option value="admin">Admin</option>
                 <option value="sales">Sales Representative</option>
               </select>
-            </div>
+            </div> */}
             <label className="form-label">Phone</label>
 
             <input
@@ -177,10 +179,10 @@ class IndividualUserContainer extends Component {
             />
             <button
               style={{ marginTop: '20px' }}
-              className="btn btn-primary"
+              className={isLoading ? 'btn disabled' : 'btn btn-primary'}
               onClick={event => this.handleSubmit(event)}
             >
-              {isLoading ? 'Updating User' : 'Edit user'}
+              Edit user
             </button>
           </div>
         </Modal>

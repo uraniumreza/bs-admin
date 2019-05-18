@@ -76,6 +76,7 @@ code {
   object-fit: contain;
   height: 300px;
   padding: 20px;
+  width: 100%;
 }
 
 .individual-product-price {
@@ -179,5 +180,26 @@ code {
 }
 
 .order-category-search .input-group {
+  width: 350px;
+}
+
+.user-category-search-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  align-self: center;
+}
+
+.user-category-search {
+  width: 50%;
+}
+
+.user-category-buttons {
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-category-search .input-group {
   width: 350px;
 }

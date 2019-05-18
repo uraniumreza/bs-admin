@@ -11,11 +11,12 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    maxHeight: '80vh'
   }
 };
 
-class AddProductContainer extends Component {
+class AddUserContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -181,10 +182,10 @@ class AddProductContainer extends Component {
             />
             <button
               style={{ marginTop: '20px' }}
-              className="btn btn-primary"
+              className={isLoading ? 'btn disabled' : 'btn btn-primary'}
               onClick={event => this.handleSubmit(event)}
             >
-              {isLoading ? 'Adding user' : 'Add user'}
+              Add user
             </button>
           </div>
         </Modal>
@@ -193,4 +194,4 @@ class AddProductContainer extends Component {
   }
 }
 
-export default AddProductContainer;
+export default AddUserContainer;

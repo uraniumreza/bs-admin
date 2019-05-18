@@ -11,7 +11,8 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    maxHeight: '80vh'
   }
 };
 
@@ -134,7 +135,6 @@ class IndividualProductContainer extends Component {
     const { id } = this.state;
     try {
       const response = await api.get(`/products/${id}`);
-      console.log(response);
       if (response && response._id) {
         const { brand, category, description, active } = response;
         this.setState({
@@ -156,15 +156,10 @@ class IndividualProductContainer extends Component {
   }
 
   handleOnChange = event => {
-    this.setState(
-      {
-        [event.target.name]:
-          event.target.value === 'true' ? true : event.target.value === 'false' ? false : event.target.value
-      },
-      () => {
-        console.log(this.state);
-      }
-    );
+    this.setState({
+      [event.target.name]:
+        event.target.value === 'true' ? true : event.target.value === 'false' ? false : event.target.value
+    });
   };
 
   handleProductEdit = async event => {
@@ -190,7 +185,6 @@ class IndividualProductContainer extends Component {
       });
       this.addSuccessNotification('Product Updated!');
     } catch (error) {
-      console.log(error);
       this.addFailureNotification('Not successfull!');
     }
   };
@@ -260,6 +254,16 @@ class IndividualProductContainer extends Component {
               value={price}
               onChange={this.handleOnChange}
             />
+            <label className="form-label">Discount</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="discount"
+              placeholder="discount"
+              value={discount}
+              onChange={this.handleOnChange}
+            />
             <label className="form-label">Brand</label>
             <input
               className="form-input"
@@ -271,7 +275,7 @@ class IndividualProductContainer extends Component {
               onChange={this.handleOnChange}
             />
             <label className="form-label">Description</label>
-            <input
+            <textarea
               className="form-input"
               type="text"
               id="input-example-1"
@@ -317,11 +321,19 @@ class IndividualProductContainer extends Component {
             />
 
             <div className="button-section">
-              <button style={{ marginTop: '20px' }} className="btn btn-primary" onClick={this.onCloudUploadImage}>
-                {imageUploading ? 'Uploading Image' : 'Upload Image'}
+              <button
+                style={{ marginTop: '20px' }}
+                className={imageUploading ? 'btn disabled' : 'btn btn-primary'}
+                onClick={this.onCloudUploadImage}
+              >
+                Upload Image
               </button>
-              <button style={{ marginTop: '20px' }} className="btn btn-primary" onClick={this.handleProductEdit}>
-                {isLoading ? 'Updating' : 'Update Product Info'}
+              <button
+                style={{ marginTop: '20px' }}
+                className={isLoading ? 'btn disabled' : 'btn btn-primary'}
+                onClick={this.handleProductEdit}
+              >
+                Update Product Info
               </button>
             </div>
           </div>

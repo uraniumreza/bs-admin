@@ -25,7 +25,6 @@ class IndividualUserContainer extends Component {
       shopName: user.shopName,
       ownerName: user.ownerName,
       address: user.address,
-      role: user.role,
       id: user.id,
       isLoading: false
     };
@@ -69,7 +68,7 @@ class IndividualUserContainer extends Component {
   };
 
   handleSubmit = async event => {
-    const { id, phone, shopName, ownerName, address, role } = this.state;
+    const { id, phone, shopName, ownerName, address } = this.state;
     this.setState({
       isLoading: true
     });
@@ -79,8 +78,7 @@ class IndividualUserContainer extends Component {
         phone,
         shopName,
         ownerName,
-        address,
-        role
+        address
       });
       if (response.role) {
         this.addNotification('User info Updated', 'success');
@@ -164,7 +162,6 @@ class IndividualUserContainer extends Component {
               <select name="role" value={role} className="form-select" onChange={this.handleOnChange}>
                 <option value="admin">Admin</option>
                 <option value="sales">Sales Representative</option>
-                <option value="user">Shopper</option>
               </select>
             </div>
             <label className="form-label">Phone</label>

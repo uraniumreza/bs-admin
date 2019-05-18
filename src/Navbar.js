@@ -25,7 +25,7 @@ class Navbar extends Component {
               Users
             </NavLink>
             <NavLink to="/notifications" className="navbar-brand mr-2">
-              notifications
+              Notifications
             </NavLink>
           </section>
           <section className="navbar-section">

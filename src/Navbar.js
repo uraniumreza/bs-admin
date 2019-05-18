@@ -24,9 +24,12 @@ class Navbar extends Component {
             <NavLink to="/users" className="navbar-brand mr-2">
               Users
             </NavLink>
+            <NavLink to="/notifications" className="navbar-brand mr-2">
+              notifications
+            </NavLink>
           </section>
           <section className="navbar-section">
-            <a href="..." className="navbar-brand mr-2" onClick={this.handleOnClick}>
+            <a href="/..." className="navbar-brand mr-2" onClick={this.handleOnClick}>
               Logout
             </a>
           </section>

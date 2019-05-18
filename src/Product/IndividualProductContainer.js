@@ -173,7 +173,7 @@ class IndividualProductContainer extends Component {
       isLoading: true
     });
     try {
-      await api.patch(`products/${id}`, {
+      const resposne = await api.patch(`products/${id}`, {
         name,
         price,
         discount,
@@ -184,6 +184,7 @@ class IndividualProductContainer extends Component {
         description,
         image
       });
+      console.log(resposne);
       this.setState({
         isLoading: false
       });

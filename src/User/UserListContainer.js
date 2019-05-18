@@ -1,40 +1,72 @@
 import React, { Component } from 'react';
 import IndividualUserContainer from './IndividualUserContainer';
+import api from '../Common/api';
+import Loading from '../Common/Loading';
+import AddUserContainer from './AddUserContainer';
 
-/* For users only textual data will be shown */
-/* Make 3 part there too*/
-/* Admin, SR, normal user */
 class UserListContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = { category: 'user' };
+    this.state = { category: 'user', users: [], isLoading: false };
   }
+
+  componentDidMount() {
+    this.loadData(this.state.category);
+  }
+
+  loadData = async status => {
+    this.setState({
+      isLoading: true
+    });
+    try {
+      const queryString = `users/?role=${status}`;
+      const response = await api.get(queryString);
+      console.log(response);
+      this.setState({
+        users: response,
+        isLoading: false
+      });
+    } catch (error) {
+      this.setState({
+        isLoading: false
+      });
+    }
+  };
 
   handleOnUserCategoryClick = category => {
     this.setState({
       category: category
     });
+    this.loadData(category);
   };
 
   render() {
+    const { users, isLoading, category } = this.state;
     return (
-      <div className="product-showcase-container">
-        <strong>USER LIST</strong>
-        <div className="product-category-buttons">
-          <button className="btn btn-primary" onClick={() => this.handleOnUserCategoryClick('user')}>
-            Users
-          </button>
-          <button className="btn btn-primary" onClick={() => this.handleOnUserCategoryClick('sr')}>
-            Sales Respresentative
-          </button>
-          <button className="btn btn-primary" onClick={() => this.handleOnUserCategoryClick('admin')}>
-            Admin
-          </button>
-        </div>
-        <div className="product-showcase">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((x, id) => (
-            <IndividualUserContainer key={id} id={id} />
-          ))}
+      <div>
+        <AddUserContainer />
+        <div className="product-showcase-container">
+          <strong>USER LIST</strong>
+          <div className="product-category-buttons">
+            {userTypes.map((type, idx) => (
+              <button
+                key={idx}
+                className={category === type.status ? 'btn btn-primary' : 'btn btn-default'}
+                onClick={() => this.handleOnUserCategoryClick(type.status)}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <div className="product-showcase">
+              {users.map((user, id) => (
+                <IndividualUserContainer key={id} user={user} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -42,3 +74,18 @@ class UserListContainer extends Component {
 }
 
 export default UserListContainer;
+
+const userTypes = [
+  {
+    status: 'user',
+    label: 'USERS'
+  },
+  {
+    status: 'sales',
+    label: 'SALES'
+  },
+  {
+    status: 'admin',
+    label: 'ADMIN'
+  }
+];

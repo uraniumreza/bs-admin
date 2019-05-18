@@ -1,8 +1,14 @@
+// TODO: Notification admin
+// TODO: Order/user pagination
+// TODO: Add discounts on products
+// TODO: Add search on user by phone number
+
 import React, { Component } from 'react';
 import Modal from 'react-modal';
-import ReactNotification from 'react-notifications-component';
 import Select from 'react-select';
+import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
+import api from '../Common/api';
 
 const customStyles = {
   content: {
@@ -14,90 +20,40 @@ const customStyles = {
     transform: 'translate(-50%, -50%)'
   }
 };
-
-const colourOptions = [
-  { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
-  { value: 'blue', label: 'Blue', color: '#0052CC', disabled: true },
-  { value: 'purple', label: 'Purple', color: '#5243AA' },
-  { value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
-  { value: 'orange', label: 'Orange', color: '#FF8B00' },
-  { value: 'yellow', label: 'Yellow', color: '#FFC400' },
-  { value: 'green', label: 'Green', color: '#36B37E' },
-  { value: 'forest', label: 'Forest', color: '#00875A' },
-  { value: 'slate', label: 'Slate', color: '#253858' },
-  { value: 'silver', label: 'Silver', color: '#666666' }
-];
-
-const dataObject = {
-  orderId: '1',
-  shopName: 'BS trading',
-  ownerName: 'Nayeem Reza',
-  phone: '8801536239164',
-  products: [
-    {
-      id: '1',
-      name: 'The long name of the product',
-      image: 'https://images-na.ssl-images-amazon.com/images/I/61H7IVw48tL._UL900_.jpg',
-      price: '10',
-      status: 'active',
-      quantity: 5
-    },
-    {
-      id: '2',
-      name: 'The long name of the product',
-      image: 'https://images-na.ssl-images-amazon.com/images/I/61H7IVw48tL._UL900_.jpg',
-      price: '10',
-      status: 'active',
-      quantity: 5
-    },
-    {
-      id: '3',
-      name: 'The long name of the product',
-      image: 'https://images-na.ssl-images-amazon.com/images/I/61H7IVw48tL._UL900_.jpg',
-      price: '10',
-      status: 'active',
-      quantity: 5
-    },
-    {
-      id: '4',
-      name: 'The long name of the product',
-      image: 'https://images-na.ssl-images-amazon.com/images/I/61H7IVw48tL._UL900_.jpg',
-      price: 10,
-      status: 'active',
-      quantity: 5
-    }
-  ],
-  totalPrice: 100,
-  forwardedTo: null,
-  orderStatus: 'pending'
-};
-
 class IndividualOrderContainer extends Component {
   constructor(props) {
     super(props);
+    const { order } = this.props;
+    const { user } = order;
+    const { SRS } = this.props;
     this.state = {
       modalIsOpen: false,
-      orderId: dataObject.orderId,
-      shopName: dataObject.shopName,
-      ownerName: dataObject.ownerName,
-      phone: dataObject.phone,
-      products: dataObject.products,
-      totalPrice: dataObject.totalPrice,
-      forwardedTo: null,
-      orderStatus: 'active'
+      orderId: order.order_id,
+      shopName: user.shopName,
+      ownerName: user.ownerName,
+      phone: user.phone,
+      products: order.products,
+      totalPrice: order.total_price,
+      srID: order.sr_id ? order.sr_id : null,
+      orderStatus: order.state,
+      schemaId: order.id,
+      SROptions: SRS.map(SR => ({
+        value: SR.id,
+        label: SR.ownerName + ', Address: ' + SR.address
+      })),
+      isLoading: false
     };
     this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.addNotification = this.addNotification.bind(this);
     this.notificationDOMRef = React.createRef();
   }
 
-  addNotification() {
+  addNotification(notification, type) {
     this.notificationDOMRef.current.addNotification({
-      title: 'Awesomeness',
-      message: 'Awesome Notifications!',
-      type: 'success',
+      title: 'Order Status',
+      message: notification,
+      type: type,
       insert: 'top',
       container: 'top-right',
       animationIn: ['animated', 'fadeIn'],
@@ -107,17 +63,12 @@ class IndividualOrderContainer extends Component {
     });
   }
 
-  handleProductClick = id => {
+  handleProductClick = () => {
     this.openModal();
   };
 
   openModal() {
     this.setState({ modalIsOpen: true });
-  }
-
-  afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // this.subtitle.style.color = '#f00';
   }
 
   closeModal(e) {
@@ -126,42 +77,105 @@ class IndividualOrderContainer extends Component {
   }
 
   handleOnChange = event => {
-    this.setState(
-      {
-        [event.target.name]: event.target.value
-      },
-      () => {
-        console.log(this.state);
-      }
-    );
+    this.setState({
+      [event.target.name]: event.target.value
+    });
   };
 
-  handleSubmit = event => {
-    // this.closeModal(event);
-    this.addNotification();
+  handleSubmit = async event => {
+    const { srID, schemaId } = this.state;
+    if (srID === null) {
+      this.addNotification('First select the SR', 'danger');
+      return;
+    }
+    try {
+      const queryString = `orders/${schemaId}`;
+      const response = await api.patch(queryString, {
+        sr_id: srID
+      });
+      if (!response.status) {
+        this.addNotification(response.message, 'success');
+      } else {
+        this.addNotification(response.message, 'danger');
+      }
+    } catch (err) {
+      this.addNotification('SR Updating error', 'danger');
+    }
+  };
+
+  handleOnQuantityUpdate = (event, idx) => {
+    let products = [...this.state.products];
+    let product = { ...products[idx] };
+    product.final_quantity = Number(event.target.value);
+    products[idx] = product;
+    this.setState({ products });
+  };
+
+  handleOnSelect = SR => {
+    this.setState({
+      srID: SR.value
+    });
+  };
+
+  onRequestQuantityChange = async event => {
+    const { products, schemaId } = this.state;
+    try {
+      const queryString = `orders/${schemaId}`;
+      const response = await api.patch(queryString, {
+        products
+      });
+      if (!response.status) {
+        this.addNotification(response.message, 'success');
+      } else {
+        this.addNotification(response.message, 'danger');
+      }
+    } catch (err) {
+      this.addNotification('Product Update Failed', 'danger');
+    }
+  };
+
+  onCancelOrder = async event => {
+    const { schemaId } = this.state;
+    try {
+      const queryString = `orders/${schemaId}`;
+      const response = await api.patch(queryString, {
+        state: 'Cancelled',
+        modalIsOpen: false
+      });
+      if (!response.status) {
+        this.addNotification(response.message, 'success');
+        this.closeModal(event);
+      } else {
+        this.addNotification(response.message, 'danger');
+      }
+    } catch (error) {
+      this.addNotification('Cancelling order failed', 'danger');
+    }
   };
 
   render() {
-    const { id } = this.props;
-    const { phone, shopName, ownerName, orderId, products } = this.state;
+    const { phone, shopName, ownerName, orderId, products, SROptions, isLoading, orderStatus, srID } = this.state;
 
     return (
-      <div className="individual-product-wrapper" onClick={() => this.handleProductClick(id)}>
+      <div className="individual-product-wrapper" onClick={() => this.handleProductClick()}>
+        <span style={{ textAlign: 'center' }} className={labelData.filter(l => l.status === orderStatus)[0].label}>
+          {orderStatus}
+        </span>
         <ReactNotification ref={this.notificationDOMRef} />
         <div className="product-name" style={{ marginTop: '20px' }}>
           <strong>Order # </strong>
-          {id}
+          {orderId}
         </div>
         <div className="product-name">
           <strong>Shop Name: </strong>
           {shopName}
         </div>
         <div className="product-name">
-          <strong>Owner Name:</strong>
+          <strong>Owner Name: </strong>
           {ownerName}
         </div>
         <div className="product-name">
-          <strong>Phone:</strong> {phone}
+          <strong>Phone: </strong> {phone}
         </div>
         <Modal
           isOpen={this.state.modalIsOpen}
@@ -170,78 +184,116 @@ class IndividualOrderContainer extends Component {
           style={customStyles}
           contentLabel="Example Modal"
         >
-          <div style={{ marginBottom: '20px' }}>
-            <strong>OrderId: {id}</strong>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <div>
+              <strong>Order Number: {orderId}</strong>
+            </div>
+            <div>
+              <strong>Shop Name: </strong>
+              {shopName}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <div>
+              <strong>Phone: </strong> {phone}
+            </div>
+            <div>
+              <strong>Owner Name: </strong>
+              {ownerName}
+            </div>
           </div>
 
           <label className="form-label" style={{ marginBottom: '20px' }}>
-            <strong>Select Sales Representative</strong>
+            <strong> {srID ? '✅ Sales Representative' : 'Sales Representative'}</strong>
           </label>
           <div className="sr-selection">
             <Select
               className="basic-single"
               classNamePrefix="select"
-              defaultValue={colourOptions[0]}
+              value={SROptions.filter(SR => SR.value === this.state.srID)[0]}
               isClearable={true}
               isSearchable={true}
-              name="color"
-              options={colourOptions}
+              name="srID"
+              options={SROptions}
+              onChange={this.handleOnSelect}
             />
           </div>
-
           <div className="order-description-header">
-            <div className="order-item-id">
-              <strong>#</strong>
+            <div className="order-item-image-container">
+              <strong>IMAGE</strong>
             </div>
             <div className="order-item-name">
               <strong>NAME</strong>
             </div>
-            <div className="order-item-quantity">
-              <strong>QUANTITY</strong>
-              {/* <input type="number" className="form-input" value="1" /> */}
-            </div>
+
             <div className="order-item-price">
               <strong>PRICE</strong>
             </div>
-            <div className="order-item-cancel">
-              <strong>REMOVE</strong>
-
-              {/* <button className="btn btn-primary" onClick={event => this.handleSubmit(event)}>
-                Cancel
-              </button> */}
+            <div className="order-item-quantity">
+              <strong>STOCK</strong>
+            </div>
+            <div className="order-item-quantity">
+              <strong>ORDERED QTY</strong>
+            </div>
+            <div className="order-item-quantity">
+              <strong>FINAL QTY</strong>
             </div>
           </div>
-          {products.map(product => (
-            <div className="order-description-header">
-              <div className="order-item-id">{product.id}</div>
-              <div className="order-item-name">{product.name}</div>
-              <div className="order-item-quantity">
-                <input
-                  className="form-input"
-                  type="text"
-                  id="input-example-1"
-                  name="stock"
-                  placeholder="Category"
-                  value={product.quantity}
-                  onChange={this.handleOnChange}
-                />
+          {products.map((product, idx) => (
+            <div key={idx} className="order-description-header">
+              <div className="order-item-image-container">
+                <img style={{ width: '50px', height: '50px' }} src={product.image} alt="product_image" />
               </div>
+              <div className="order-item-name">{product.name}</div>
               <div className="order-item-price">{product.price} </div>
-              <div className="order-item-cancel">
-                <button className="btn btn-error" onClick={event => this.handleSubmit(event)}>
-                  Cancel
-                </button>
+              <div className="order-item-quantity">{product.stock_count}</div>
+              <div className="order-item-quantity">{product.ordered_quantity}</div>
+
+              <div className="order-item-quantity">
+                {orderStatus === 'Pending' ? (
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="input-example-1"
+                    name="final_quantity"
+                    placeholder="quantity"
+                    value={product.final_quantity}
+                    onChange={e => this.handleOnQuantityUpdate(e, idx)}
+                  />
+                ) : (
+                  <div>{product.final_quantity}</div>
+                )}
               </div>
             </div>
           ))}
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <button
-              className="btn btn-success"
-              style={{ textAlign: 'center' }}
-              onClick={event => this.handleSubmit(event)}
-            >
-              Forward to SR
-            </button>
+          <div style={{ marginTop: '50px' }}>
+            {orderStatus === 'Pending' ? (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ width: '10%' }}>
+                  <button disabled={isLoading} className="btn btn-error" onClick={event => this.onCancelOrder(event)}>
+                    Cancel Order
+                  </button>
+                </div>
+                <div style={{ width: '40%', display: 'flex', justifyContent: 'space-around' }}>
+                  <button
+                    disabled={isLoading}
+                    className="btn btn-success"
+                    onClick={event => this.onRequestQuantityChange(event)}
+                  >
+                    Update quantity
+                  </button>
+                  <button
+                    className="btn btn-success"
+                    disabled={isLoading}
+                    style={{ textAlign: 'center', marginLeft: '10px' }}
+                    onClick={event => this.handleSubmit(event)}
+                  >
+                    Forward to SR
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
         </Modal>
       </div>
@@ -250,3 +302,22 @@ class IndividualOrderContainer extends Component {
 }
 
 export default IndividualOrderContainer;
+
+const labelData = [
+  {
+    status: 'Pending',
+    label: 'label label-secondary'
+  },
+  {
+    status: 'Processing',
+    label: 'label label-warning'
+  },
+  {
+    status: 'Delivered',
+    label: 'label label-success'
+  },
+  {
+    status: 'Cancelled',
+    label: 'label label-error'
+  }
+];

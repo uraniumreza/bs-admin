@@ -1,8 +1,3 @@
-/* TODO
-
-- If logged in, redirect to order status
-*/
-
 import React, { Component } from 'react';
 import auth from '../Common/auth';
 import Loading from '../Common/Loading';
@@ -76,9 +71,7 @@ class LoginPage extends Component {
             onChange={this.handleChange}
             autoComplete="true"
           />
-          <label className="form-label" for="input-example-1">
-            Password
-          </label>
+          <label className="form-label">Password</label>
           <input
             className="form-input"
             name="password"

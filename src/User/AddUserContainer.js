@@ -15,18 +15,17 @@ const customStyles = {
   }
 };
 
-class IndividualUserContainer extends Component {
+class AddProductContainer extends Component {
   constructor(props) {
     super(props);
-    const { user } = this.props;
     this.state = {
       modalIsOpen: false,
-      phone: user.phone,
-      shopName: user.shopName,
-      ownerName: user.ownerName,
-      address: user.address,
-      role: user.role,
-      id: user.id,
+      phone: '',
+      shopName: '',
+      ownerName: '',
+      address: '',
+      role: '',
+      password: '',
       isLoading: false
     };
     this.openModal = this.openModal.bind(this);
@@ -69,23 +68,24 @@ class IndividualUserContainer extends Component {
   };
 
   handleSubmit = async event => {
-    const { id, phone, shopName, ownerName, address, role } = this.state;
+    const { phone, shopName, ownerName, address, role, password } = this.state;
     this.setState({
       isLoading: true
     });
     try {
-      const queryString = `users/${id}`;
-      const response = await api.patch(queryString, {
+      const queryString = `auth/register`;
+      const response = await api.post(queryString, {
         phone,
         shopName,
         ownerName,
         address,
-        role
+        role,
+        password
       });
-      if (response.role) {
-        this.addNotification('User info Updated', 'success');
+      if (response.user) {
+        this.addNotification('User successfully created', 'success');
       } else {
-        this.addNotification("User info didn't update", 'danger');
+        this.addNotification("Couldn't create User", 'danger');
       }
       this.setState({
         isLoading: false
@@ -94,39 +94,30 @@ class IndividualUserContainer extends Component {
       this.setState({
         isLoading: false
       });
-      this.addNotification("User info didn't update", 'danger');
+      this.addNotification("Couldn't create user", 'danger');
     }
   };
 
+  handleAddNewUserClick = () => {
+    this.openModal();
+  };
+
   render() {
-    const { id, phone, shopName, ownerName, address, role, isLoading } = this.state;
+    const { phone, shopName, ownerName, address, role, isLoading, password } = this.state;
 
     return (
-      <div className="individual-product-wrapper" onClick={() => this.handleProductClick(id)}>
+      <div className="add-product-container">
         <ReactNotification ref={this.notificationDOMRef} />
-        <div className="product-name" style={{ marginTop: '20px' }}>
-          <strong>Phone: </strong>
-          {phone}
-        </div>
-        <div className="product-name">
-          <strong>Shop Name:</strong>
-          {shopName}
-        </div>
-        <div className="product-name">
-          <strong>Owner Name:</strong> {ownerName}
-        </div>
-        <div className="product-name">
-          <strong>Address:</strong> {address}
-        </div>
-        <div className="product-name">
-          <strong>Role:</strong> {role}
-        </div>
-
+        Add an user by clicking the button
+        <button className="btn btn-primary" onClick={this.handleAddNewUserClick}>
+          Add an user
+        </button>
+        Or click on the user to edit the information
         <Modal
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           style={customStyles}
-          contentLabel="Example Modal"
+          contentLabel="User Model"
         >
           <div className="form-group" style={{ width: '500px' }}>
             <label className="form-label">Shop Name</label>
@@ -164,11 +155,9 @@ class IndividualUserContainer extends Component {
               <select name="role" value={role} className="form-select" onChange={this.handleOnChange}>
                 <option value="admin">Admin</option>
                 <option value="sales">Sales Representative</option>
-                <option value="user">Shopper</option>
               </select>
             </div>
             <label className="form-label">Phone</label>
-
             <input
               className="form-input"
               type="text"
@@ -178,12 +167,24 @@ class IndividualUserContainer extends Component {
               value={phone}
               onChange={this.handleOnChange}
             />
+
+            <label className="form-label">Password</label>
+
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="password"
+              placeholder="password"
+              value={password}
+              onChange={this.handleOnChange}
+            />
             <button
               style={{ marginTop: '20px' }}
               className="btn btn-primary"
               onClick={event => this.handleSubmit(event)}
             >
-              {isLoading ? 'Updating User' : 'Edit user'}
+              {isLoading ? 'Adding user' : 'Add user'}
             </button>
           </div>
         </Modal>
@@ -192,4 +193,4 @@ class IndividualUserContainer extends Component {
   }
 }
 
-export default IndividualUserContainer;
+export default AddProductContainer;

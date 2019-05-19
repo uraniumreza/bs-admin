@@ -1,6 +1,4 @@
 // TODO: Order/user pagination
-// TODO: Add discounts on products
-// TODO: Add search on user by phone number
 
 import React, { Component } from 'react';
 import Modal from 'react-modal';

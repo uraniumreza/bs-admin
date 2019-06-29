@@ -6,6 +6,7 @@ import Select from 'react-select';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import api from '../Common/api';
+import moment from 'moment';
 
 const customStyles = {
   content: {
@@ -35,6 +36,7 @@ class IndividualOrderContainer extends Component {
       srID: order.sr_id ? order.sr_id : null,
       orderStatus: order.state,
       schemaId: order.id,
+      createdAt: order.created_at,
       SROptions: SRS.map(SR => ({
         value: SR.id,
         label: SR.ownerName + ', Address: ' + SR.address
@@ -152,7 +154,18 @@ class IndividualOrderContainer extends Component {
   };
 
   render() {
-    const { phone, shopName, ownerName, orderId, products, SROptions, isLoading, orderStatus, srID } = this.state;
+    const {
+      phone,
+      shopName,
+      ownerName,
+      orderId,
+      products,
+      SROptions,
+      isLoading,
+      orderStatus,
+      srID,
+      createdAt
+    } = this.state;
 
     return (
       <div className="individual-product-wrapper" onClick={() => this.handleProductClick()}>
@@ -163,6 +176,10 @@ class IndividualOrderContainer extends Component {
         <div className="product-name" style={{ marginTop: '20px' }}>
           <strong>Order # </strong>
           {orderId}
+        </div>
+        <div className="product-name">
+          <strong>Date: </strong>
+          {moment(createdAt).format('DD-MM-YYYY')}
         </div>
         <div className="product-name">
           <strong>Shop Name: </strong>
@@ -184,7 +201,11 @@ class IndividualOrderContainer extends Component {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <div>
-              <strong>Order Number: {orderId}</strong>
+              <strong>
+                Order Number: {orderId}
+                <br />
+                Date: {moment(createdAt).format('DD-MM-YYYY')}
+              </strong>
             </div>
             <div>
               <strong>Shop Name: </strong>

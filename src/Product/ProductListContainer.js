@@ -41,19 +41,22 @@ class ProductListContainer extends Component {
   };
 
   render() {
-    const { items, isLoading } = this.state;
+    const { items, isLoading, category } = this.state;
     return (
       <div className="product-showcase-container">
         <strong>PRODUCT LIST</strong>
         <div className="product-category-buttons">
-          <button className="btn btn-primary" onClick={() => this.handleOnCategoryClick('Cosmetics')}>
-            Cosmetics
-          </button>
-          <button className="btn btn-primary" onClick={() => this.handleOnCategoryClick('Electronics')}>
-            Electronics
-          </button>
-          <button className="btn btn-primary" onClick={() => this.handleOnCategoryClick('Accessories')}>
-            Accessories
+          {buttonTags.map((button, id) => (
+            <button
+              key={id}
+              className={category === button.status ? 'btn btn-primary' : 'btn btn-default'}
+              onClick={() => this.handleOnCategoryClick(button.status)}
+            >
+              {button.status}
+            </button>
+          ))}
+          <button className="btn btn-default" onClick={() => this.handleOnCategoryClick(category)}>
+            Refresh
           </button>
         </div>
         {isLoading ? (
@@ -71,3 +74,15 @@ class ProductListContainer extends Component {
 }
 
 export default ProductListContainer;
+
+const buttonTags = [
+  {
+    status: 'Cosmetics'
+  },
+  {
+    status: 'Electronics'
+  },
+  {
+    status: 'Accessories'
+  }
+];

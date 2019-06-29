@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { HashRouter, Route } from 'react-router-dom';
 import LoginPage from './LandingPage/LoginPage';
 import ProtectedRoute from './ProtectedRoute';
 import OrderContainer from './Order/OrderContainer';
@@ -11,7 +11,7 @@ import NotificationContainer from './Notification/NotificationContainer';
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <div>
           <Route path="/" component={LoginPage} exact />
           <ProtectedRoute path="/orders" component={OrderContainer} />
@@ -19,7 +19,7 @@ class App extends Component {
           <ProtectedRoute path="/products" component={ProductContainer} />
           <ProtectedRoute path="/notifications" component={NotificationContainer} />
         </div>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }

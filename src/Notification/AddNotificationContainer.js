@@ -45,6 +45,42 @@ class AddNotificationContainer extends Component {
     });
   }
 
+  onCloudUploadImage = async () => {
+    const { file } = this.state;
+    let fd = new FormData();
+    fd.append('image', file);
+    this.setState({
+      imageUploading: true
+    });
+    try {
+      const response = await api.post('/media/upload', fd);
+      if (response && response.url) {
+        this.setState({
+          image: response.url,
+          imageUploading: false
+        });
+        this.addNotification('Image uploaded', 'success');
+      } else {
+        this.addNotification('Upload Failed', 'danger');
+      }
+      this.setState({
+        imageUploading: false
+      });
+    } catch (err) {
+      this.addNotification('Upload Failed', 'danger');
+      this.setState({
+        imageUploading: false
+      });
+    }
+  };
+
+  handleImageUpload = event => {
+    const files = Array.from(event.target.files);
+    this.setState({
+      file: files[0]
+    });
+  };
+
   handleProductClick = id => {
     this.openModal();
   };
@@ -65,14 +101,15 @@ class AddNotificationContainer extends Component {
   };
 
   handleSubmit = async event => {
-    const { message } = this.state;
+    const { message, image } = this.state;
     this.setState({
       isLoading: true
     });
     try {
       const queryString = `notifications`;
       const response = await api.post(queryString, {
-        message
+        message,
+        image
       });
       if (response.active) {
         this.addNotification('Notification created', 'success');
@@ -95,7 +132,7 @@ class AddNotificationContainer extends Component {
   };
 
   render() {
-    const { active, message, isLoading } = this.state;
+    const { message, isLoading, imageUploading } = this.state;
 
     return (
       <div className="add-product-container">
@@ -122,21 +159,31 @@ class AddNotificationContainer extends Component {
               onChange={this.handleOnChange}
               value={message}
             />
-            {/* 
-            <label className="form-label">Active Status:</label>
-            <div className="form-group">
-              <select name="role" value={active} className="form-select" onChange={this.handleOnChange}>
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
-              </select>
-            </div> */}
-            <button
-              style={{ marginTop: '20px' }}
-              className={isLoading ? 'btn disabled' : 'btn btn-primary'}
-              onClick={event => this.handleSubmit(event)}
-            >
-              Add notification
-            </button>
+            <label className="form-label">Image</label>
+            <input
+              className="form-input"
+              type="file"
+              id="input-example-1"
+              name="image"
+              placeholder="Image"
+              onChange={this.handleImageUpload}
+            />
+            <div className="button-section">
+              <button
+                style={{ marginTop: '20px' }}
+                className={imageUploading ? 'btn disabled' : 'btn btn-primary'}
+                onClick={this.onCloudUploadImage}
+              >
+                Upload Image
+              </button>
+              <button
+                style={{ marginTop: '20px' }}
+                className={isLoading ? 'btn disabled' : 'btn btn-primary'}
+                onClick={event => this.handleSubmit(event)}
+              >
+                Add notification
+              </button>
+            </div>
           </div>
         </Modal>
       </div>

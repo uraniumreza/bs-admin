@@ -16,6 +16,13 @@ code {
   margin-right: 10px;
 }
 
+a.active,
+a:active,
+a:focus,
+a:hover {
+  font-weight: bold !important;
+}
+
 .add-product-container {
   margin-top: 20px;
   height: 140px;
@@ -75,6 +82,12 @@ code {
 .individual-product-image {
   object-fit: contain;
   height: 300px;
+  padding: 20px;
+  width: 100%;
+}
+
+.notification-image {
+  object-fit: contain;
   padding: 20px;
   width: 100%;
 }

@@ -115,7 +115,6 @@ class IndividualProductContainer extends Component {
       this.setState({
         imageUploading: false
       });
-      this.addFailureNotification('Upload Failed');
     }
   };
 
@@ -189,6 +188,23 @@ class IndividualProductContainer extends Component {
     }
   };
 
+  handleProductDelete = async event => {
+    const { id } = this.state;
+    this.setState({
+      isLoading: true
+    });
+    try {
+      const response = await api.delete(`products/${id}`);
+      console.log(response);
+      this.setState({
+        isLoading: false
+      });
+      this.addSuccessNotification('Product Deleted!');
+    } catch (error) {
+      this.addFailureNotification('Not successful');
+    }
+  };
+
   render() {
     const { id } = this.props;
     const {
@@ -234,6 +250,13 @@ class IndividualProductContainer extends Component {
           contentLabel="Example Modal"
         >
           <div className="form-group" style={{ width: '500px' }}>
+            <button
+              style={{ marginTop: '20px' }}
+              className={isLoading ? 'btn disabled' : 'btn btn-error'}
+              onClick={this.handleProductDelete}
+            >
+              Delete Product
+            </button>
             <label className="form-label">Name</label>
             <input
               className="form-input"

@@ -20,19 +20,56 @@ class IndividualNotificationContainer extends Component {
   constructor(props) {
     super(props);
     const { notification } = this.props;
-    const { message, active, _id } = notification;
+    const { message, active, _id, image } = notification;
     this.state = {
       modalIsOpen: false,
       message: message,
       isLoading: false,
       active: active === true ? 'true' : 'false',
-      schemaId: _id
+      schemaId: _id,
+      image
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.addNotification = this.addNotification.bind(this);
     this.notificationDOMRef = React.createRef();
   }
+
+  onCloudUploadImage = async () => {
+    const { file } = this.state;
+    let fd = new FormData();
+    fd.append('image', file);
+    this.setState({
+      imageUploading: true
+    });
+    try {
+      const response = await api.post('/media/upload', fd);
+      if (response && response.url) {
+        this.setState({
+          image: response.url,
+          imageUploading: false
+        });
+        this.addNotification('Image uploaded', 'success');
+      } else {
+        this.addNotification('Upload Failed', 'danger');
+      }
+      this.setState({
+        imageUploading: false
+      });
+    } catch (err) {
+      this.addNotification('Upload Failed', 'danger');
+      this.setState({
+        imageUploading: false
+      });
+    }
+  };
+
+  handleImageUpload = event => {
+    const files = Array.from(event.target.files);
+    this.setState({
+      file: files[0]
+    });
+  };
 
   addNotification(message, type) {
     this.notificationDOMRef.current.addNotification({
@@ -68,7 +105,7 @@ class IndividualNotificationContainer extends Component {
   };
 
   handleSubmit = async event => {
-    const { message, active, schemaId } = this.state;
+    const { message, active, schemaId, image } = this.state;
     this.setState({
       isLoading: true
     });
@@ -76,6 +113,7 @@ class IndividualNotificationContainer extends Component {
       const queryString = `notifications/${schemaId}`;
       const response = await api.patch(queryString, {
         message,
+        image,
         active: active === 'true' ? true : false
       });
       if (response.message) {
@@ -99,13 +137,14 @@ class IndividualNotificationContainer extends Component {
   };
 
   render() {
-    const { active, message, isLoading } = this.state;
+    const { active, message, isLoading, imageUploading, image } = this.state;
     return (
       <div className="individual-product-wrapper" onClick={this.handleNotificationEdit}>
         <ReactNotification ref={this.notificationDOMRef} />
         <span style={{ textAlign: 'center' }} className={labelData.filter(l => l.status === active)[0].label}>
           {active === 'true' ? 'Active' : 'Inactive'}
         </span>
+        {image ? <img className="notification-image" src={image} alt="product" /> : null}
         <div className="product-name" style={{ marginTop: '20px' }}>
           <strong>Message: </strong>
           {message}
@@ -135,13 +174,32 @@ class IndividualNotificationContainer extends Component {
                 <option value="false">Inactive</option>
               </select>
             </div>
-            <button
-              style={{ marginTop: '20px' }}
-              className={isLoading ? 'btn disabled' : 'btn btn-primary'}
-              onClick={event => this.handleSubmit(event)}
-            >
-              Edit notification
-            </button>
+
+            <label className="form-label">Image</label>
+            <input
+              className="form-input"
+              type="file"
+              id="input-example-1"
+              name="image"
+              placeholder="Image"
+              onChange={this.handleImageUpload}
+            />
+            <div className="button-section">
+              <button
+                style={{ marginTop: '20px' }}
+                className={imageUploading ? 'btn disabled' : 'btn btn-primary'}
+                onClick={this.onCloudUploadImage}
+              >
+                Upload Image
+              </button>
+              <button
+                style={{ marginTop: '20px' }}
+                className={isLoading ? 'btn disabled' : 'btn btn-primary'}
+                onClick={event => this.handleSubmit(event)}
+              >
+                Edit notification
+              </button>
+            </div>
           </div>
         </Modal>
       </div>

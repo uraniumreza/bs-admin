@@ -135,13 +135,14 @@ class IndividualProductContainer extends Component {
     try {
       const response = await api.get(`/products/${id}`);
       if (response && response._id) {
-        const { brand, category, description, active } = response;
+        const { brand, category, description, active, color } = response;
         this.setState({
           brand,
           category,
           description,
           isLoading: false,
-          active
+          active,
+          color
         });
       }
     } catch (error) {
@@ -162,7 +163,7 @@ class IndividualProductContainer extends Component {
   };
 
   handleProductEdit = async event => {
-    const { id, name, price, discount, stock, brand, active, category, description, image } = this.state;
+    const { id, name, price, discount, stock, brand, active, category, description, image, color } = this.state;
     this.setState({
       isLoading: true
     });
@@ -176,7 +177,8 @@ class IndividualProductContainer extends Component {
         active,
         category,
         description,
-        image
+        image,
+        color
       });
       console.log(resposne);
       this.setState({
@@ -218,7 +220,8 @@ class IndividualProductContainer extends Component {
       category,
       description,
       isLoading,
-      imageUploading
+      imageUploading,
+      color
     } = this.state;
     return (
       <div className="individual-product-wrapper">
@@ -315,6 +318,16 @@ class IndividualProductContainer extends Component {
                 <option value="Accessories">Accessories</option>
               </select>
             </div>
+            <label className="form-label">Color</label>
+            <input
+              className="form-input"
+              type="text"
+              id="input-example-1"
+              name="color"
+              placeholder="Color"
+              value={color}
+              onChange={this.handleOnChange}
+            />
             <label className="form-label">Active</label>
             <div className="form-group">
               <select name="active" value={active} className="form-select" onChange={this.handleOnChange}>

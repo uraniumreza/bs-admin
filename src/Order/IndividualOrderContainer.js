@@ -29,7 +29,7 @@ class IndividualOrderContainer extends Component {
     this.state = {
       modalIsOpen: false,
       orderId: order.order_id,
-      shopName: user.shopName,
+      shopName: user.shopName ? user.shopName : null,
       ownerName: user.ownerName,
       phone: user.phone,
       products: order.products,

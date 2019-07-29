@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import IndividualUserContainer from './IndividualUserContainer';
 import api from '../Common/api';
 import Loading from '../Common/Loading';
-import AddUserContainer from './AddUserContainer';
+// import AddUserContainer from './AddUserContainer';
 
 class UserListContainer extends Component {
   constructor(props) {
@@ -81,7 +81,7 @@ class UserListContainer extends Component {
     const { users, isLoading, category } = this.state;
     return (
       <div>
-        <AddUserContainer />
+        {/* <AddUserContainer /> */}
         <div
           className="user-category-search-buttons"
           style={{ marginTop: '30px', marginRight: '3%', marginLeft: '3%' }}

@@ -111,16 +111,24 @@ class UserListContainer extends Component {
                 {type.label}
               </button>
             ))}
+            <button className="btn btn-default" onClick={() => this.handleOnUserCategoryClick(category)}>
+              Refresh
+            </button>
           </div>
         </div>
         <div className="product-showcase-container" style={{ marginTop: '0px' }}>
           {isLoading ? (
             <Loading />
           ) : (
-            <div className="product-showcase">
-              {users.map((user, id) => (
-                <IndividualUserContainer key={id} user={user} />
-              ))}
+            <div className="product-showcase-numbers">
+              <div className="user-number-showcase">
+                {category} : {users ? users.length : 0}
+              </div>
+              <div className="product-showcase">
+                {users.map((user, id) => (
+                  <IndividualUserContainer key={id} user={user} />
+                ))}
+              </div>
             </div>
           )}
         </div>

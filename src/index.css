@@ -55,7 +55,7 @@ a:hover {
   display: flex;
   width: 95%;
   flex-wrap: wrap;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 .individual-product-container {
@@ -215,4 +215,21 @@ a:hover {
 
 .user-category-search .input-group {
   width: 350px;
+}
+
+.user-number-showcase {
+  font-size: 17px;
+  font-weight: bold;
+  width: 116px;
+  text-align: center;
+  color: white;
+  background-color: #5755d9;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 30px;
+  margin-left: 21px;
+}
+
+.product-showcase-numbers {
+  width: 100%;
 }

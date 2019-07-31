@@ -98,6 +98,23 @@ class IndividualUserContainer extends Component {
     }
   };
 
+  handleUserDelete = async event => {
+    const { id } = this.state;
+    this.setState({
+      isLoading: true
+    });
+    try {
+      const response = await api.delete(`users/${id}`);
+      console.log(response);
+      this.setState({
+        isLoading: false
+      });
+      this.addNotification('User Deleted!', 'success');
+    } catch (error) {
+      this.addNotification('Not successful', 'danger');
+    }
+  };
+
   render() {
     const { id, phone, shopName, ownerName, address, role, isLoading } = this.state;
 
@@ -129,6 +146,13 @@ class IndividualUserContainer extends Component {
           contentLabel="Example Modal"
         >
           <div className="form-group" style={{ width: '500px' }}>
+            <button
+              style={{ marginTop: '20px' }}
+              className={isLoading ? 'btn disabled' : 'btn btn-error'}
+              onClick={this.handleUserDelete}
+            >
+              Delete User
+            </button>
             <label className="form-label">Shop Name</label>
             <input
               className="form-input"

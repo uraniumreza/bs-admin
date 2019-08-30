@@ -12,15 +12,15 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    maxHeight: '80vh'
-  }
+    maxHeight: '80vh',
+  },
 };
 
 class IndividualProductContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalIsOpen: false
+      modalIsOpen: false,
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -36,7 +36,7 @@ class IndividualProductContainer extends Component {
       image,
       price,
       discount,
-      stock: stock_count
+      stock: stock_count,
     });
   }
 
@@ -50,14 +50,14 @@ class IndividualProductContainer extends Component {
       animationIn: ['animated', 'fadeIn'],
       animationOut: ['animated', 'fadeOut'],
       dismiss: { duration: 2000 },
-      dismissable: { click: true }
+      dismissable: { click: true },
     });
   }
 
-  handleImageUpload = event => {
+  handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
     this.setState({
-      file: files[0]
+      file: files[0],
     });
   };
 
@@ -71,7 +71,7 @@ class IndividualProductContainer extends Component {
       animationIn: ['animated', 'fadeIn'],
       animationOut: ['animated', 'fadeOut'],
       dismiss: { duration: 2000 },
-      dismissable: { click: true }
+      dismissable: { click: true },
     });
   }
 
@@ -85,7 +85,7 @@ class IndividualProductContainer extends Component {
       animationIn: ['animated', 'fadeIn'],
       animationOut: ['animated', 'fadeOut'],
       dismiss: { duration: 2000 },
-      dismissable: { click: true }
+      dismissable: { click: true },
     });
   }
 
@@ -94,26 +94,26 @@ class IndividualProductContainer extends Component {
     let fd = new FormData();
     fd.append('image', file);
     this.setState({
-      imageUploading: true
+      imageUploading: true,
     });
     try {
       const response = await api.post('/media/upload', fd);
-      if (response && response.url) {
+      if (response && response.secure_url) {
         this.setState({
-          image: response.url,
-          imageUploading: false
+          image: response.secure_url,
+          imageUploading: false,
         });
         this.addSuccessNotification('Image uploaded');
       } else {
         this.addFailureNotification('Upload Failed');
       }
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
     } catch (err) {
       this.addFailureNotification('Upload Failed');
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
     }
   };
@@ -129,7 +129,7 @@ class IndividualProductContainer extends Component {
 
   loadData = async () => {
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     const { id } = this.state;
     try {
@@ -142,7 +142,7 @@ class IndividualProductContainer extends Component {
           description,
           isLoading: false,
           active,
-          color
+          color,
         });
       }
     } catch (error) {
@@ -155,17 +155,17 @@ class IndividualProductContainer extends Component {
     this.setState({ modalIsOpen: false });
   }
 
-  handleOnChange = event => {
+  handleOnChange = (event) => {
     this.setState({
       [event.target.name]:
-        event.target.value === 'true' ? true : event.target.value === 'false' ? false : event.target.value
+        event.target.value === 'true' ? true : event.target.value === 'false' ? false : event.target.value,
     });
   };
 
-  handleProductEdit = async event => {
+  handleProductEdit = async (event) => {
     const { id, name, price, discount, stock, brand, active, category, description, image, color } = this.state;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     try {
       const resposne = await api.patch(`products/${id}`, {
@@ -178,11 +178,11 @@ class IndividualProductContainer extends Component {
         category,
         description,
         image,
-        color
+        color,
       });
       console.log(resposne);
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
       this.addSuccessNotification('Product Updated!');
     } catch (error) {
@@ -190,16 +190,16 @@ class IndividualProductContainer extends Component {
     }
   };
 
-  handleProductDelete = async event => {
+  handleProductDelete = async (event) => {
     const { id } = this.state;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     try {
       const response = await api.delete(`products/${id}`);
       console.log(response);
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
       this.addSuccessNotification('Product Deleted!');
     } catch (error) {
@@ -221,7 +221,7 @@ class IndividualProductContainer extends Component {
       description,
       isLoading,
       imageUploading,
-      color
+      color,
     } = this.state;
     return (
       <div className="individual-product-wrapper">

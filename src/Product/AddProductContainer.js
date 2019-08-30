@@ -12,8 +12,8 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    maxHeight: '80vh'
-  }
+    maxHeight: '80vh',
+  },
 };
 
 class AddProductContainer extends Component {
@@ -31,7 +31,7 @@ class AddProductContainer extends Component {
       description: '',
       imageUploading: false,
       imageLink: '',
-      productSaving: false
+      productSaving: false,
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -50,7 +50,7 @@ class AddProductContainer extends Component {
       animationIn: ['animated', 'fadeIn'],
       animationOut: ['animated', 'fadeOut'],
       dismiss: { duration: 2000 },
-      dismissable: { click: true }
+      dismissable: { click: true },
     });
   }
 
@@ -64,11 +64,11 @@ class AddProductContainer extends Component {
       animationIn: ['animated', 'fadeIn'],
       animationOut: ['animated', 'fadeOut'],
       dismiss: { duration: 2000 },
-      dismissable: { click: true }
+      dismissable: { click: true },
     });
   }
 
-  handleAddNewProductClick = id => {
+  handleAddNewProductClick = (id) => {
     this.openModal();
   };
 
@@ -81,16 +81,16 @@ class AddProductContainer extends Component {
     this.setState({ modalIsOpen: false });
   }
 
-  handleOnChange = event => {
+  handleOnChange = (event) => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     const { name, brand, color, category, price, imageLink, description, stock } = this.state;
     this.setState({
-      productSaving: true
+      productSaving: true,
     });
     try {
       const response = await api.post('/products', {
@@ -101,7 +101,7 @@ class AddProductContainer extends Component {
         price,
         image: imageLink,
         description,
-        stock_count: stock
+        stock_count: stock,
       });
       if (response && response._id) {
         this.addSuccessNotification('Product added');
@@ -116,7 +116,7 @@ class AddProductContainer extends Component {
           description: '',
           imageUploading: false,
           imageLink: '',
-          productSaving: false
+          productSaving: false,
         });
       } else {
         this.addFailureNotification('Update failed');
@@ -127,10 +127,10 @@ class AddProductContainer extends Component {
     }
   };
 
-  handleImageUpload = event => {
+  handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
     this.setState({
-      file: files[0]
+      file: files[0],
     });
   };
 
@@ -139,26 +139,26 @@ class AddProductContainer extends Component {
     let fd = new FormData();
     fd.append('image', file);
     this.setState({
-      imageUploading: true
+      imageUploading: true,
     });
     try {
       const response = await api.post('/media/upload', fd);
-      if (response && response.url) {
+      if (response && response.secure_url) {
         this.setState({
-          imageLink: response.url,
-          imageUploading: false
+          imageLink: response.secure_url,
+          imageUploading: false,
         });
         this.addSuccessNotification('Image uploaded');
       } else {
         this.addFailureNotification('Upload Failed');
       }
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
     } catch (err) {
       this.addFailureNotification('Upload Failed');
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
       this.addFailureNotification('Upload Failed');
     }
@@ -176,7 +176,7 @@ class AddProductContainer extends Component {
       productSaving,
       color,
       description,
-      discount
+      discount,
     } = this.state;
     return (
       <div className="add-product-container">

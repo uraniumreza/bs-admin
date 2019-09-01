@@ -70,7 +70,7 @@ class IndividualUserContainer extends Component {
   };
 
   handleSubmit = async event => {
-    const { id, phone, shopName, ownerName, address } = this.state;
+    const { id, phone, shopName, ownerName, address, role } = this.state;
     this.setState({
       isLoading: true
     });
@@ -80,7 +80,8 @@ class IndividualUserContainer extends Component {
         phone,
         shopName,
         ownerName,
-        address
+        address,
+        role
       });
       if (response.role) {
         this.addNotification('User info Updated', 'success');
@@ -186,6 +187,7 @@ class IndividualUserContainer extends Component {
             <label className="form-label">Role</label>
             <div className="form-group">
               <select name="role" value={role} className="form-select" onChange={this.handleOnChange}>
+                <option value="user">User</option>
                 <option value="admin">Admin</option>
                 <option value="sales">Sales Representative</option>
               </select>

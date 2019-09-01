@@ -12,8 +12,8 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    maxHeight: '80vh'
-  }
+    maxHeight: '80vh',
+  },
 };
 
 class AddNotificationContainer extends Component {
@@ -23,7 +23,7 @@ class AddNotificationContainer extends Component {
       modalIsOpen: false,
       message: '',
       isLoading: false,
-      active: 'true'
+      active: 'true',
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -41,7 +41,7 @@ class AddNotificationContainer extends Component {
       animationIn: ['animated', 'fadeIn'],
       animationOut: ['animated', 'fadeOut'],
       dismiss: { duration: 2000 },
-      dismissable: { click: true }
+      dismissable: { click: true },
     });
   }
 
@@ -50,38 +50,38 @@ class AddNotificationContainer extends Component {
     let fd = new FormData();
     fd.append('image', file);
     this.setState({
-      imageUploading: true
+      imageUploading: true,
     });
     try {
       const response = await api.post('/media/upload', fd);
-      if (response && response.url) {
+      if (response && response.secure_url) {
         this.setState({
-          image: response.url,
-          imageUploading: false
+          image: response.secure_url,
+          imageUploading: false,
         });
         this.addNotification('Image uploaded', 'success');
       } else {
         this.addNotification('Upload Failed', 'danger');
       }
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
     } catch (err) {
       this.addNotification('Upload Failed', 'danger');
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
     }
   };
 
-  handleImageUpload = event => {
+  handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
     this.setState({
-      file: files[0]
+      file: files[0],
     });
   };
 
-  handleProductClick = id => {
+  handleProductClick = (id) => {
     this.openModal();
   };
 
@@ -94,22 +94,22 @@ class AddNotificationContainer extends Component {
     this.setState({ modalIsOpen: false });
   }
 
-  handleOnChange = event => {
+  handleOnChange = (event) => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     const { message, image } = this.state;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     try {
       const queryString = `notifications`;
       const response = await api.post(queryString, {
         message,
-        image
+        image,
       });
       if (response.active) {
         this.addNotification('Notification created', 'success');
@@ -117,11 +117,11 @@ class AddNotificationContainer extends Component {
         this.addNotification("Couldn't create Notification", 'danger');
       }
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     } catch (err) {
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
       this.addNotification("Couldn't create notification", 'danger');
     }
@@ -179,7 +179,7 @@ class AddNotificationContainer extends Component {
               <button
                 style={{ marginTop: '20px' }}
                 className={isLoading ? 'btn disabled' : 'btn btn-primary'}
-                onClick={event => this.handleSubmit(event)}
+                onClick={(event) => this.handleSubmit(event)}
               >
                 Add notification
               </button>

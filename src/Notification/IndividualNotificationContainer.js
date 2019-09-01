@@ -12,8 +12,8 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    maxHeight: '80vh'
-  }
+    maxHeight: '80vh',
+  },
 };
 
 class IndividualNotificationContainer extends Component {
@@ -27,7 +27,7 @@ class IndividualNotificationContainer extends Component {
       isLoading: false,
       active: active === true ? 'true' : 'false',
       schemaId: _id,
-      image
+      image,
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -40,34 +40,34 @@ class IndividualNotificationContainer extends Component {
     let fd = new FormData();
     fd.append('image', file);
     this.setState({
-      imageUploading: true
+      imageUploading: true,
     });
     try {
       const response = await api.post('/media/upload', fd);
-      if (response && response.url) {
+      if (response && response.secure_url) {
         this.setState({
-          image: response.url,
-          imageUploading: false
+          image: response.secure_url,
+          imageUploading: false,
         });
         this.addNotification('Image uploaded', 'success');
       } else {
         this.addNotification('Upload Failed', 'danger');
       }
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
     } catch (err) {
       this.addNotification('Upload Failed', 'danger');
       this.setState({
-        imageUploading: false
+        imageUploading: false,
       });
     }
   };
 
-  handleImageUpload = event => {
+  handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
     this.setState({
-      file: files[0]
+      file: files[0],
     });
   };
 
@@ -81,11 +81,11 @@ class IndividualNotificationContainer extends Component {
       animationIn: ['animated', 'fadeIn'],
       animationOut: ['animated', 'fadeOut'],
       dismiss: { duration: 2000 },
-      dismissable: { click: true }
+      dismissable: { click: true },
     });
   }
 
-  handleProductClick = id => {
+  handleProductClick = (id) => {
     this.openModal();
   };
 
@@ -98,23 +98,23 @@ class IndividualNotificationContainer extends Component {
     this.setState({ modalIsOpen: false });
   }
 
-  handleOnChange = event => {
+  handleOnChange = (event) => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     const { message, active, schemaId, image } = this.state;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     try {
       const queryString = `notifications/${schemaId}`;
       const response = await api.patch(queryString, {
         message,
         image,
-        active: active === 'true' ? true : false
+        active: active === 'true' ? true : false,
       });
       if (response.message) {
         this.addNotification('Notification Edited', 'success');
@@ -122,11 +122,11 @@ class IndividualNotificationContainer extends Component {
         this.addNotification("Couldn't edit Notification", 'danger');
       }
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     } catch (err) {
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
       this.addNotification("Couldn't edit notification", 'danger');
     }
@@ -141,7 +141,7 @@ class IndividualNotificationContainer extends Component {
     return (
       <div className="individual-product-wrapper" onClick={this.handleNotificationEdit}>
         <ReactNotification ref={this.notificationDOMRef} />
-        <span style={{ textAlign: 'center' }} className={labelData.filter(l => l.status === active)[0].label}>
+        <span style={{ textAlign: 'center' }} className={labelData.filter((l) => l.status === active)[0].label}>
           {active === 'true' ? 'Active' : 'Inactive'}
         </span>
         {image ? <img className="notification-image" src={image} alt="product" /> : null}
@@ -195,7 +195,7 @@ class IndividualNotificationContainer extends Component {
               <button
                 style={{ marginTop: '20px' }}
                 className={isLoading ? 'btn disabled' : 'btn btn-primary'}
-                onClick={event => this.handleSubmit(event)}
+                onClick={(event) => this.handleSubmit(event)}
               >
                 Edit notification
               </button>
@@ -212,10 +212,10 @@ export default IndividualNotificationContainer;
 const labelData = [
   {
     status: 'false',
-    label: 'label label-secondary'
+    label: 'label label-secondary',
   },
   {
     status: 'true',
-    label: 'label label-success'
-  }
+    label: 'label label-success',
+  },
 ];

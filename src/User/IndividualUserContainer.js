@@ -183,13 +183,13 @@ class IndividualUserContainer extends Component {
               value={address}
               onChange={this.handleOnChange}
             />
-            {/* <label className="form-label">Role</label>
+            <label className="form-label">Role</label>
             <div className="form-group">
               <select name="role" value={role} className="form-select" onChange={this.handleOnChange}>
                 <option value="admin">Admin</option>
                 <option value="sales">Sales Representative</option>
               </select>
-            </div> */}
+            </div>
             <label className="form-label">Phone</label>
 
             <input

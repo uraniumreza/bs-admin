@@ -8,6 +8,7 @@ import Select from 'react-select';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import api from '../Common/api';
+import moment from 'moment';
 
 const customStyles = {
   content: {
@@ -41,7 +42,10 @@ class IndividualOrderContainer extends Component {
         value: SR.id,
         label: SR.ownerName + ', Address: ' + SR.address
       })),
-      isLoading: false
+      isLoading: false,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+      address: user.address
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -154,7 +158,20 @@ class IndividualOrderContainer extends Component {
   };
 
   render() {
-    const { phone, shopName, ownerName, orderId, products, SROptions, isLoading, orderStatus, srID } = this.state;
+    const {
+      phone,
+      shopName,
+      ownerName,
+      orderId,
+      products,
+      SROptions,
+      isLoading,
+      orderStatus,
+      srID,
+      updatedAt,
+      createdAt,
+      address
+    } = this.state;
 
     return (
       <div className="individual-product-wrapper" onClick={() => this.handleProductClick()}>
@@ -175,8 +192,31 @@ class IndividualOrderContainer extends Component {
           {ownerName}
         </div>
         <div className="product-name">
+          <strong>Address: </strong>
+          {address}
+        </div>
+        <div className="product-name">
           <strong>Phone: </strong> {phone}
         </div>
+        <div className="product-name">
+          <strong>Created at:</strong> {moment(createdAt).format('DD-MM-YYYY HH:mm:ss')}
+        </div>
+        {orderStatus !== 'Pending' ? (
+          <div className="product-name">
+            <div>
+              <strong>
+                {orderStatus === 'Processing'
+                  ? 'Processed at: '
+                  : orderStatus === 'Delivered'
+                  ? 'Delivered at: '
+                  : orderStatus === 'Cancelled'
+                  ? 'Cancelled at: '
+                  : null}
+              </strong>
+              {moment(updatedAt).format('DD-MM-YYYY HH:mm:ss')}
+            </div>
+          </div>
+        ) : null}
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import api from '../Common/api';
+import moment from 'moment';
 
 const customStyles = {
   content: {
@@ -28,7 +29,9 @@ class IndividualUserContainer extends Component {
       address: user.address,
       id: user.id,
       isLoading: false,
-      role: user.role
+      role: user.role,
+      createdAt: user.created_at,
+      signedupBy: user.signedupBy || null
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -117,7 +120,7 @@ class IndividualUserContainer extends Component {
   };
 
   render() {
-    const { id, phone, shopName, ownerName, address, role, isLoading } = this.state;
+    const { id, phone, shopName, ownerName, address, role, isLoading, createdAt, signedupBy } = this.state;
 
     return (
       <div className="individual-product-wrapper" onClick={() => this.handleProductClick(id)}>
@@ -138,6 +141,15 @@ class IndividualUserContainer extends Component {
         </div>
         <div className="product-name">
           <strong>Role:</strong> {role}
+        </div>
+        {signedupBy ? (
+          <div className="product-name">
+            <strong>SR phone number:</strong> {signedupBy}
+          </div>
+        ) : null}
+
+        <div className="product-name">
+          <strong>Joined at:</strong> {moment(createdAt).format('DD-MM-YYYY HH:mm:ss')}
         </div>
 
         <Modal

@@ -149,7 +149,7 @@ class IndividualUserContainer extends Component {
         ) : null}
 
         <div className="product-name">
-          <strong>Joined at:</strong> {moment(createdAt).format('DD-MM-YYYY HH:mm:ss')}
+          <strong>Joined at:</strong> {moment(createdAt).format('DD-MM-YYYY hh:mm:ss A')}
         </div>
 
         <Modal

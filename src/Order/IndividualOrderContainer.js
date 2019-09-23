@@ -199,7 +199,7 @@ class IndividualOrderContainer extends Component {
           <strong>Phone: </strong> {phone}
         </div>
         <div className="product-name">
-          <strong>Created at:</strong> {moment(createdAt).format('DD-MM-YYYY HH:mm:ss')}
+          <strong>Ordered at:</strong> {moment(createdAt).format('DD-MM-YYYY hh:mm:ss A')}
         </div>
         {orderStatus !== 'Pending' ? (
           <div className="product-name">
@@ -213,7 +213,7 @@ class IndividualOrderContainer extends Component {
                   ? 'Cancelled at: '
                   : null}
               </strong>
-              {moment(updatedAt).format('DD-MM-YYYY HH:mm:ss')}
+              {moment(updatedAt).format('DD-MM-YYYY hh:mm:ss A')}
             </div>
           </div>
         ) : null}

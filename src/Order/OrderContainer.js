@@ -128,23 +128,28 @@ class OrderContainer extends Component {
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="product-showcase">
-            {orders.length > 0 ? (
-              orders.map((order, id) => <IndividualOrderContainer key={id} order={order} SRS={SRS} />)
-            ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '250px',
-                  fontWeight: bold,
-                  width: '100%'
-                }}
-              >
-                <h1>কোন অর্ডার নেই</h1>
-              </div>
-            )}
+          <div className="product-showcase-container">
+            <div className="user-number-showcase">
+              {status} : {orders ? orders.length : 0}
+            </div>
+            <div className="product-showcase">
+              {orders.length > 0 ? (
+                orders.map((order, id) => <IndividualOrderContainer key={id} order={order} SRS={SRS} />)
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '250px',
+                    fontWeight: bold,
+                    width: '100%'
+                  }}
+                >
+                  <h1>কোন অর্ডার নেই</h1>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

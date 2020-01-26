@@ -2,23 +2,23 @@
 // TODO: Add discounts on products
 // TODO: Add search on user by phone number
 
-import React, { Component } from 'react';
-import Modal from 'react-modal';
-import Select from 'react-select';
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import api from '../Common/api';
-import moment from 'moment';
+import React, { Component } from "react";
+import Modal from "react-modal";
+import Select from "react-select";
+import ReactNotification from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
+import api from "../Common/api";
+import moment from "moment";
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    height: '80vh'
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    height: "80vh"
   }
 };
 class IndividualOrderContainer extends Component {
@@ -40,7 +40,7 @@ class IndividualOrderContainer extends Component {
       schemaId: order.id,
       SROptions: SRS.map(SR => ({
         value: SR.id,
-        label: SR.ownerName + ', Address: ' + SR.address
+        label: SR.ownerName + ", Address: " + SR.address
       })),
       isLoading: false,
       createdAt: order.createdAt,
@@ -55,13 +55,13 @@ class IndividualOrderContainer extends Component {
 
   addNotification(notification, type) {
     this.notificationDOMRef.current.addNotification({
-      title: 'Order Status',
+      title: "Order Status",
       message: notification,
       type: type,
-      insert: 'top',
-      container: 'top-right',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      insert: "top",
+      container: "top-right",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: { duration: 2000 },
       dismissable: { click: true }
     });
@@ -89,7 +89,7 @@ class IndividualOrderContainer extends Component {
   handleSubmit = async event => {
     const { srID, schemaId } = this.state;
     if (srID === null) {
-      this.addNotification('First select the SR', 'danger');
+      this.addNotification("First select the SR", "danger");
       return;
     }
     try {
@@ -98,12 +98,12 @@ class IndividualOrderContainer extends Component {
         sr_id: srID
       });
       if (!response.status) {
-        this.addNotification(response.message, 'success');
+        this.addNotification(response.message, "success");
       } else {
-        this.addNotification(response.message, 'danger');
+        this.addNotification(response.message, "danger");
       }
     } catch (err) {
-      this.addNotification('SR Updating error', 'danger');
+      this.addNotification("SR Updating error", "danger");
     }
   };
 
@@ -129,12 +129,12 @@ class IndividualOrderContainer extends Component {
         products
       });
       if (!response.status) {
-        this.addNotification(response.message, 'success');
+        this.addNotification(response.message, "success");
       } else {
-        this.addNotification(response.message, 'danger');
+        this.addNotification(response.message, "danger");
       }
     } catch (err) {
-      this.addNotification('Product Update Failed', 'danger');
+      this.addNotification("Product Update Failed", "danger");
     }
   };
 
@@ -143,17 +143,16 @@ class IndividualOrderContainer extends Component {
     try {
       const queryString = `orders/${schemaId}`;
       const response = await api.patch(queryString, {
-        state: 'Cancelled',
-        modalIsOpen: false
+        state: "Cancelled"
       });
       if (!response.status) {
-        this.addNotification(response.message, 'success');
+        this.addNotification(response.message, "success");
         this.closeModal(event);
       } else {
-        this.addNotification(response.message, 'danger');
+        this.addNotification(response.message, "danger");
       }
     } catch (error) {
-      this.addNotification('Cancelling order failed', 'danger');
+      this.addNotification("Cancelling order failed", "danger");
     }
   };
 
@@ -175,11 +174,11 @@ class IndividualOrderContainer extends Component {
 
     return (
       <div className="individual-product-wrapper" onClick={() => this.handleProductClick()}>
-        <span style={{ textAlign: 'center' }} className={labelData.filter(l => l.status === orderStatus)[0].label}>
+        <span style={{ textAlign: "center" }} className={labelData.filter(l => l.status === orderStatus)[0].label}>
           {orderStatus}
         </span>
         <ReactNotification ref={this.notificationDOMRef} />
-        <div className="product-name" style={{ marginTop: '20px' }}>
+        <div className="product-name" style={{ marginTop: "20px" }}>
           <strong>Order # </strong>
           {orderId}
         </div>
@@ -199,21 +198,21 @@ class IndividualOrderContainer extends Component {
           <strong>Phone: </strong> {phone}
         </div>
         <div className="product-name">
-          <strong>Ordered at:</strong> {moment(createdAt).format('DD-MM-YYYY hh:mm:ss A')}
+          <strong>Ordered at:</strong> {moment(createdAt).format("DD-MM-YYYY hh:mm:ss A")}
         </div>
-        {orderStatus !== 'Pending' ? (
+        {orderStatus !== "Pending" ? (
           <div className="product-name">
             <div>
               <strong>
-                {orderStatus === 'Processing'
-                  ? 'Processed at: '
-                  : orderStatus === 'Delivered'
-                  ? 'Delivered at: '
-                  : orderStatus === 'Cancelled'
-                  ? 'Cancelled at: '
+                {orderStatus === "Processing"
+                  ? "Processed at: "
+                  : orderStatus === "Delivered"
+                  ? "Delivered at: "
+                  : orderStatus === "Cancelled"
+                  ? "Cancelled at: "
                   : null}
               </strong>
-              {moment(updatedAt).format('DD-MM-YYYY hh:mm:ss A')}
+              {moment(updatedAt).format("DD-MM-YYYY hh:mm:ss A")}
             </div>
           </div>
         ) : null}
@@ -224,7 +223,7 @@ class IndividualOrderContainer extends Component {
           style={customStyles}
           contentLabel="Example Modal"
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
             <div>
               <strong>Order Number: {orderId}</strong>
             </div>
@@ -234,7 +233,7 @@ class IndividualOrderContainer extends Component {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
             <div>
               <strong>Phone: </strong> {phone}
             </div>
@@ -244,8 +243,8 @@ class IndividualOrderContainer extends Component {
             </div>
           </div>
 
-          <label className="form-label" style={{ marginBottom: '20px' }}>
-            <strong> {srID ? '✅ Sales Representative' : 'Sales Representative'}</strong>
+          <label className="form-label" style={{ marginBottom: "20px" }}>
+            <strong> {srID ? "✅ Sales Representative" : "Sales Representative"}</strong>
           </label>
           <div className="sr-selection">
             <Select
@@ -283,7 +282,7 @@ class IndividualOrderContainer extends Component {
           {products.map((product, idx) => (
             <div key={idx} className="order-description-header">
               <div className="order-item-image-container">
-                <img style={{ width: '50px', height: '50px' }} src={product.image} alt="product_image" />
+                <img style={{ width: "50px", height: "50px" }} src={product.image} alt="product_image" />
               </div>
               <div className="order-item-name">{product.name}</div>
               <div className="order-item-price">{product.price} </div>
@@ -291,7 +290,7 @@ class IndividualOrderContainer extends Component {
               <div className="order-item-quantity">{product.ordered_quantity}</div>
 
               <div className="order-item-quantity">
-                {orderStatus === 'Pending' ? (
+                {orderStatus === "Pending" ? (
                   <input
                     className="form-input"
                     type="number"
@@ -307,28 +306,28 @@ class IndividualOrderContainer extends Component {
               </div>
             </div>
           ))}
-          <div style={{ marginTop: '50px' }}>
-            {orderStatus === 'Pending' ? (
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ width: '10%' }}>
+          <div style={{ marginTop: "50px" }}>
+            {orderStatus === "Pending" || orderStatus === "Processing" ? (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div style={{ width: "10%" }}>
                   <button
                     disabled={isLoading}
-                    className={isLoading ? 'btn disabled' : 'btn btn-error'}
+                    className={isLoading ? "btn disabled" : "btn btn-error"}
                     onClick={event => this.onCancelOrder(event)}
                   >
                     Cancel Order
                   </button>
                 </div>
-                <div style={{ width: '40%', display: 'flex', justifyContent: 'space-around' }}>
+                <div style={{ width: "40%", display: "flex", justifyContent: "space-around" }}>
                   <button
-                    className={isLoading ? 'btn disabled' : 'btn btn-success'}
+                    className={isLoading ? "btn disabled" : "btn btn-success"}
                     onClick={event => this.onRequestQuantityChange(event)}
                   >
                     Update quantity
                   </button>
                   <button
-                    className={isLoading ? 'btn disabled' : 'btn btn-success'}
-                    style={{ textAlign: 'center', marginLeft: '10px' }}
+                    className={isLoading ? "btn disabled" : "btn btn-success"}
+                    style={{ textAlign: "center", marginLeft: "10px" }}
                     onClick={event => this.handleSubmit(event)}
                   >
                     Forward to SR
@@ -347,19 +346,19 @@ export default IndividualOrderContainer;
 
 const labelData = [
   {
-    status: 'Pending',
-    label: 'label label-secondary'
+    status: "Pending",
+    label: "label label-secondary"
   },
   {
-    status: 'Processing',
-    label: 'label label-warning'
+    status: "Processing",
+    label: "label label-warning"
   },
   {
-    status: 'Delivered',
-    label: 'label label-success'
+    status: "Delivered",
+    label: "label label-success"
   },
   {
-    status: 'Cancelled',
-    label: 'label label-error'
+    status: "Cancelled",
+    label: "label label-error"
   }
 ];
